@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@stylexjs/stylex": "^0.16.1",
+    "react": "^19.2.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
