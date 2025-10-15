@@ -1,9 +1,10 @@
-import { createRoot } from "react-dom/client";
+import { Layout } from '../components/layout/Layout';
+import { BlogPage } from '../components/blog/BlogPage';
 
-function Page() {
-    return <div>Hello, world!</div>;
+export function App() {
+  return (
+    <Layout>
+      <BlogPage />
+    </Layout>
+  );
 }
-
-createRoot(window.document.getElementById("root")!).render(
-  <Page />,
-);
