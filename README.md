@@ -28,9 +28,7 @@ src/
 │   │   ├── BlogPostDetail.tsx    # Modal for full post view
 │   │   └── CategoryFilter.tsx    # Category filter buttons
 │   └── layout/         # Layout components
-│       ├── Header.tsx            # Site header
-│       ├── Footer.tsx            # Site footer
-│       └── Layout.tsx            # Main layout wrapper
+│       └── Header.tsx            # Site header
 ├── data/
 │   ├── mockData.ts              # Mock blog post data
 │   └── mockBlogService.ts       # Mock service implementation
