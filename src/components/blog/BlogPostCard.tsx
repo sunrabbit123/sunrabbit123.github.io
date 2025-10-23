@@ -113,6 +113,11 @@ export const BlogPostCard = memo(function BlogPostCard({ post, onClick }: BlogPo
     }
   };
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    // Fallback to a placeholder when image fails to load
+    e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect fill='%23D2B48C' width='400' height='200'/%3E%3Ctext fill='%236B3E2E' font-family='sans-serif' font-size='18' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3EImage unavailable%3C/text%3E%3C/svg%3E`;
+  };
+
   return (
     <article
       {...stylex.props(styles.card)}
@@ -125,6 +130,9 @@ export const BlogPostCard = memo(function BlogPostCard({ post, onClick }: BlogPo
       <img
         src={post.featuredImage}
         alt={`Featured image for ${post.title}`}
+        loading="lazy"
+        decoding="async"
+        onError={handleImageError}
         {...stylex.props(styles.image)}
       />
       <div {...stylex.props(styles.content)}>

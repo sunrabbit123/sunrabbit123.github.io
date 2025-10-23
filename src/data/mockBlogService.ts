@@ -3,6 +3,12 @@ import type { BlogPost, Category } from '../types/blog';
 import { mockPosts, mockCategories } from './mockData';
 
 /**
+ * Simulated network delay in milliseconds for mock API responses
+ * This makes the mock service behave more like a real API
+ */
+const MOCK_API_DELAY_MS = 300;
+
+/**
  * Mock implementation of the BlogService interface
  * This uses in-memory data but could easily be swapped for an API client
  */
@@ -13,7 +19,7 @@ export class MockBlogService implements BlogService {
   /**
    * Simulate async behavior like a real API
    */
-  private async delay<T>(data: T, ms: number = 300): Promise<T> {
+  private async delay<T>(data: T, ms: number = MOCK_API_DELAY_MS): Promise<T> {
     return new Promise(resolve => {
       setTimeout(() => resolve(data), ms);
     });

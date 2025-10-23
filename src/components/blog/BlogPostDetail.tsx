@@ -132,6 +132,11 @@ export function BlogPostDetail({ post, onClose }: BlogPostDetailProps) {
     day: 'numeric',
   });
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    // Fallback to a placeholder when image fails to load
+    e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'%3E%3Crect fill='%23D2B48C' width='800' height='400'/%3E%3Ctext fill='%236B3E2E' font-family='sans-serif' font-size='24' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3EImage unavailable%3C/text%3E%3C/svg%3E`;
+  };
+
   // Lock body scroll when modal is open
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -214,6 +219,9 @@ export function BlogPostDetail({ post, onClose }: BlogPostDetailProps) {
           <img
             src={post.featuredImage}
             alt={`Featured image for ${post.title}`}
+            loading="lazy"
+            decoding="async"
+            onError={handleImageError}
             {...stylex.props(styles.image)}
           />
 
