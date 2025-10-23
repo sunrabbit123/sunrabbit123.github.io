@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { spacing } from '../../theme/spacing.stylex';
 import type { BlogPost } from '../../types/blog';
@@ -37,7 +38,7 @@ interface BlogPostListProps {
   onPostClick?: (post: BlogPost) => void;
 }
 
-export function BlogPostList({ posts, loading, onPostClick }: BlogPostListProps) {
+export const BlogPostList = memo(function BlogPostList({ posts, loading, onPostClick }: BlogPostListProps) {
   if (loading) {
     return (
       <div {...stylex.props(styles.container)}>
@@ -67,4 +68,4 @@ export function BlogPostList({ posts, loading, onPostClick }: BlogPostListProps)
       </div>
     </div>
   );
-}
+});

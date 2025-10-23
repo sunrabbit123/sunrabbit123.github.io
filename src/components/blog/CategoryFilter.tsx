@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { colors } from '../../theme/colors.stylex';
 import { fontSizes, fontWeights } from '../../theme/typography.stylex';
@@ -52,7 +53,7 @@ interface CategoryFilterProps {
   onSelectCategory: (category: string | null) => void;
 }
 
-export function CategoryFilter({
+export const CategoryFilter = memo(function CategoryFilter({
   categories,
   selectedCategory,
   onSelectCategory,
@@ -84,4 +85,4 @@ export function CategoryFilter({
       </div>
     </div>
   );
-}
+});
