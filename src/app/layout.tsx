@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
 import * as stylex from "@stylexjs/stylex";
 import { colors } from "../theme/colors.stylex";
 import { fonts } from "../theme/typography.stylex";
@@ -42,7 +41,6 @@ export default function RootLayout({
       <body {...stylex.props(styles.body)}>
         <Header />
         <main {...stylex.props(styles.main)}>{children}</main>
-        <Footer />
       </body>
     </html>
   );

@@ -82,37 +82,9 @@ const styles = stylex.create({
     borderBottomStyle: 'solid',
     borderBottomColor: colors.borderLight,
   },
-  author: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  avatar: {
-    width: '48px',
-    height: '48px',
-    borderRadius: borderRadius.full,
-    objectFit: 'cover',
-  },
-  authorInfo: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: spacing.xs,
-  },
-  authorName: {
-    fontSize: fontSizes.base,
-    fontWeight: fontWeights.bold,
-    color: colors.textPrimary,
-  },
   date: {
     fontSize: fontSizes.sm,
     color: colors.textTertiary,
-  },
-  readTime: {
-    fontSize: fontSizes.sm,
-    color: colors.textTertiary,
-    padding: `${spacing.sm} ${spacing.md}`,
-    backgroundColor: colors.backgroundSecondary,
-    borderRadius: borderRadius.sm,
   },
   body: {
     padding: `0 ${spacing.xl} ${spacing.xl} ${spacing.xl}`,
@@ -183,22 +155,7 @@ export function BlogPostDetail({ post, onClose }: BlogPostDetailProps) {
           <h1 {...stylex.props(styles.title)}>{post.title}</h1>
 
           <div {...stylex.props(styles.meta)}>
-            <div {...stylex.props(styles.author)}>
-              <img
-                src={post.author.avatar}
-                alt={post.author.name}
-                {...stylex.props(styles.avatar)}
-              />
-              <div {...stylex.props(styles.authorInfo)}>
-                <span {...stylex.props(styles.authorName)}>
-                  {post.author.name}
-                </span>
-                <span {...stylex.props(styles.date)}>{formattedDate}</span>
-              </div>
-            </div>
-            <span {...stylex.props(styles.readTime)}>
-              {post.readTime} min read
-            </span>
+            <span {...stylex.props(styles.date)}>{formattedDate}</span>
           </div>
         </div>
 

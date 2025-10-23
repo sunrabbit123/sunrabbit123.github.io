@@ -47,27 +47,7 @@ const styles = stylex.create({
     gap: spacing.md,
     flexWrap: 'wrap',
   },
-  author: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  avatar: {
-    width: '32px',
-    height: '32px',
-    borderRadius: borderRadius.full,
-    objectFit: 'cover',
-  },
-  authorName: {
-    fontSize: fontSizes.sm,
-    color: colors.textSecondary,
-    fontWeight: fontWeights.medium,
-  },
   date: {
-    fontSize: fontSizes.sm,
-    color: colors.textTertiary,
-  },
-  readTime: {
     fontSize: fontSizes.sm,
     color: colors.textTertiary,
   },
@@ -134,20 +114,7 @@ export function BlogPostCard({ post, onClick }: BlogPostCardProps) {
         <h2 {...stylex.props(styles.title)}>{post.title}</h2>
 
         <div {...stylex.props(styles.meta)}>
-          <div {...stylex.props(styles.author)}>
-            <img
-              src={post.author.avatar}
-              alt={post.author.name}
-              {...stylex.props(styles.avatar)}
-            />
-            <span {...stylex.props(styles.authorName)}>
-              {post.author.name}
-            </span>
-          </div>
           <span {...stylex.props(styles.date)}>{formattedDate}</span>
-          <span {...stylex.props(styles.readTime)}>
-            {post.readTime} min read
-          </span>
         </div>
 
         <p {...stylex.props(styles.excerpt)}>{post.excerpt}</p>
