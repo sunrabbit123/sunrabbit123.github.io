@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { colors } from '../../theme/colors.stylex';
 import { fonts, fontSizes, fontWeights, lineHeights } from '../../theme/typography.stylex';
@@ -122,11 +123,74 @@ interface BlogPostDetailProps {
 }
 
 export function BlogPostDetail({ post, onClose }: BlogPostDetailProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   const formattedDate = post.publishedDate.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
+  // Focus close button when modal opens
+  useEffect(() => {
+    closeButtonRef.current?.focus();
+  }, []);
+
+  // Handle ESC key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [onClose]);
+
+  // Focus trap
+  useEffect(() => {
+    const modal = modalRef.current;
+    if (!modal) return;
+
+    const focusableElements = modal.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    modal.addEventListener('keydown', handleTab);
+    return () => {
+      modal.removeEventListener('keydown', handleTab);
+    };
+  }, []);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -135,24 +199,25 @@ export function BlogPostDetail({ post, onClose }: BlogPostDetailProps) {
   };
 
   return (
-    <div {...stylex.props(styles.modal)} onClick={handleBackdropClick}>
-      <div {...stylex.props(styles.content)}>
+    <div {...stylex.props(styles.modal)} onClick={handleBackdropClick} role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div {...stylex.props(styles.content)} ref={modalRef}>
         <div {...stylex.props(styles.header)}>
           <button
             {...stylex.props(styles.closeButton)}
             onClick={onClose}
-            aria-label="Close"
+            aria-label="Close modal"
+            ref={closeButtonRef}
           >
             ×
           </button>
 
           <img
             src={post.featuredImage}
-            alt={post.title}
+            alt={`Featured image for ${post.title}`}
             {...stylex.props(styles.image)}
           />
 
-          <h1 {...stylex.props(styles.title)}>{post.title}</h1>
+          <h1 {...stylex.props(styles.title)} id="modal-title">{post.title}</h1>
 
           <div {...stylex.props(styles.meta)}>
             <span {...stylex.props(styles.date)}>{formattedDate}</span>

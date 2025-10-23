@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { colors } from '../../theme/colors.stylex';
 import { fonts, fontSizes, fontWeights, lineHeights } from '../../theme/typography.stylex';
@@ -96,18 +97,34 @@ interface BlogPostCardProps {
   onClick?: () => void;
 }
 
-export function BlogPostCard({ post, onClick }: BlogPostCardProps) {
-  const formattedDate = post.publishedDate.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+export const BlogPostCard = memo(function BlogPostCard({ post, onClick }: BlogPostCardProps) {
+  const formattedDate = useMemo(() =>
+    post.publishedDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }), [post.publishedDate]
+  );
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.key === 'Enter' || e.key === ' ') && onClick) {
+      e.preventDefault();
+      onClick();
+    }
+  };
 
   return (
-    <article {...stylex.props(styles.card)} onClick={onClick}>
+    <article
+      {...stylex.props(styles.card)}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-label={`Read article: ${post.title}`}
+    >
       <img
         src={post.featuredImage}
-        alt={post.title}
+        alt={`Featured image for ${post.title}`}
         {...stylex.props(styles.image)}
       />
       <div {...stylex.props(styles.content)}>
@@ -138,4 +155,4 @@ export function BlogPostCard({ post, onClick }: BlogPostCardProps) {
       </div>
     </article>
   );
-}
+});
