@@ -1,9 +1,60 @@
 import { useState, useEffect, useMemo } from 'react';
+import * as stylex from '@stylexjs/stylex';
 import type { BlogPost } from '../../types/blog';
 import { blogService } from '../../data/mockBlogService';
 import { BlogPostList } from './BlogPostList';
 import { BlogPostDetail } from './BlogPostDetail';
 import { CategoryFilter } from './CategoryFilter';
+import { colors } from '../../theme/colors.stylex';
+import { spacing } from '../../theme/spacing.stylex';
+
+const styles = stylex.create({
+  errorContainer: {
+    padding: spacing.xl,
+    margin: `${spacing.xl} auto`,
+    maxWidth: '600px',
+    backgroundColor: '#fee',
+    border: `2px solid ${colors.error}`,
+    borderRadius: '8px',
+    textAlign: 'center',
+  },
+  errorTitle: {
+    color: colors.error,
+    margin: `0 0 ${spacing.md} 0`,
+    fontSize: '1.1rem',
+    fontWeight: 'bold',
+  },
+  errorMessage: {
+    color: colors.textPrimary,
+    margin: `0 0 ${spacing.md} 0`,
+  },
+  retryButton: {
+    padding: `${spacing.sm} ${spacing.md}`,
+    backgroundColor: colors.primaryDark,
+    color: colors.textInverse,
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '1rem',
+    ':hover': {
+      backgroundColor: colors.primary,
+    },
+    ':active': {
+      backgroundColor: colors.primaryLight,
+    },
+  },
+  categoryErrorNotification: {
+    padding: spacing.sm,
+    margin: `${spacing.md} auto`,
+    maxWidth: '1200px',
+    backgroundColor: colors.warning,
+    color: colors.textInverse,
+    borderRadius: '4px',
+    fontSize: '0.9rem',
+    textAlign: 'center',
+    opacity: 0.9,
+  },
+});
 
 export function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -12,6 +63,7 @@ export function BlogPage() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
+  const [categoryError, setCategoryError] = useState(false);
 
   useEffect(() => {
     loadPosts();
@@ -47,9 +99,12 @@ export function BlogPage() {
     try {
       const allCategories = await blogService.getCategories();
       setCategories(allCategories.map(cat => cat.name));
+      setCategoryError(false);
     } catch (error) {
       console.error('Failed to load categories:', error);
-      // Categories are non-critical, so we don't set a user-facing error
+      setCategoryError(true);
+      // Categories are non-critical, so we still allow the app to function
+      // but we show a subtle notification to the user
     }
   };
 
@@ -73,33 +128,23 @@ export function BlogPage() {
         onSelectCategory={handleCategorySelect}
       />
 
+      {categoryError && (
+        <div {...stylex.props(styles.categoryErrorNotification)}>
+          Unable to load categories. Showing all posts.
+        </div>
+      )}
+
       {error && (
-        <div style={{
-          padding: '2rem',
-          margin: '2rem auto',
-          maxWidth: '600px',
-          backgroundColor: '#fee',
-          border: '2px solid #c33',
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <p style={{ color: '#c33', margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 'bold' }}>
+        <div {...stylex.props(styles.errorContainer)}>
+          <p {...stylex.props(styles.errorTitle)}>
             Error Loading Posts
           </p>
-          <p style={{ color: '#333', margin: '0 0 1rem 0' }}>
+          <p {...stylex.props(styles.errorMessage)}>
             {error}
           </p>
           <button
             onClick={loadPosts}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: '#6B3E2E',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '1rem'
-            }}
+            {...stylex.props(styles.retryButton)}
           >
             Try Again
           </button>
