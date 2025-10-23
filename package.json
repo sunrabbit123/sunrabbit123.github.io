@@ -1,1 +1,27 @@
-{}
+{
+  "name": "blog-app",
+  "version": "1.0.0",
+  "scripts": {
+    "predev": "rimraf .next",
+    "prebuild": "rimraf .next",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@stylexjs/stylex": "^0.16.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "next": "^15.3.2"
+  },
+  "devDependencies": {
+    "@stylexjs/eslint-plugin": "^0.16.2",
+    "@stylexswc/nextjs-plugin": "^0.8.0",
+    "@stylexswc/rs-compiler": "^0.8.0",
+    "@types/node": "^22.10.6",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  }
+}

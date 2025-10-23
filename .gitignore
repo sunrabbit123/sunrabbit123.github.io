@@ -1,5 +1,6 @@
 # Dependencies
 node_modules
+package-lock.json
 
 # Build output
 dist
@@ -47,8 +48,3 @@ coverage
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-.vite
-
-# Next.js (for future migration)
-.next
-out

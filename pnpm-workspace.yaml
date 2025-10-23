@@ -1,5 +1,0 @@
-packages:
-  - application/*
-
-onlyBuiltDependencies:
-  - esbuild
