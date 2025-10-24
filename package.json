@@ -2,8 +2,8 @@
   "name": "blog-app",
   "version": "1.0.0",
   "scripts": {
-    "predev": "rimraf .next",
-    "prebuild": "rimraf .next",
+    "predev": "rimraf .next out",
+    "prebuild": "rimraf .next out",
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
