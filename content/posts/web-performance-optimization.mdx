@@ -1,0 +1,502 @@
+---
+title: "Web Performance Optimization in 2025"
+slug: "web-performance-optimization"
+publishedDate: "2024-10-18"
+excerpt: "Master modern web performance techniques including Core Web Vitals, lazy loading, and code splitting to create blazingly fast applications."
+featuredImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=630&fit=crop"
+categories: ["Development"]
+tags: ["performance", "web-vitals", "optimization", "nextjs"]
+readTime: 10
+author:
+  name: "Sam Martinez"
+  avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop"
+  bio: "Performance engineer focused on making the web faster for everyone"
+---
+
+Web performance isn't just about speed—it's about user experience, accessibility, and business outcomes. In 2025, optimizing for Core Web Vitals and modern performance metrics is more critical than ever. Let's dive into practical techniques you can implement today.
+
+## Understanding Core Web Vitals
+
+Core Web Vitals are Google's standardized metrics for measuring user experience. They consist of three key metrics:
+
+### Largest Contentful Paint (LCP)
+
+LCP measures loading performance. It should occur within **2.5 seconds** of when the page first starts loading.
+
+```typescript
+// Measure LCP
+new PerformanceObserver((list) => {
+  const entries = list.getEntries();
+  const lastEntry = entries[entries.length - 1];
+  console.log('LCP:', lastEntry.renderTime || lastEntry.loadTime);
+}).observe({ entryTypes: ['largest-contentful-paint'] });
+```
+
+**How to improve LCP:**
+
+1. Optimize and compress images
+2. Preload critical resources
+3. Remove render-blocking JavaScript
+4. Implement server-side rendering or static generation
+5. Use a CDN for faster content delivery
+
+### First Input Delay (FID) / Interaction to Next Paint (INP)
+
+FID measures interactivity (being replaced by INP in 2025). INP should be less than **200 milliseconds**.
+
+**How to improve INP:**
+
+1. Break up long JavaScript tasks
+2. Optimize event handlers
+3. Use web workers for heavy computations
+4. Implement code splitting
+5. Defer non-critical JavaScript
+
+### Cumulative Layout Shift (CLS)
+
+CLS measures visual stability. It should be less than **0.1**.
+
+```typescript
+// Measure CLS
+let clsScore = 0;
+
+new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    if (!entry.hadRecentInput) {
+      clsScore += entry.value;
+      console.log('CLS:', clsScore);
+    }
+  }
+}).observe({ entryTypes: ['layout-shift'] });
+```
+
+**How to improve CLS:**
+
+1. Always include size attributes on images and videos
+2. Never insert content above existing content
+3. Use CSS aspect ratio for dynamic content
+4. Preload fonts and use `font-display: swap`
+5. Avoid animations that trigger layout changes
+
+## Image Optimization
+
+Images are often the largest assets on web pages. Optimize them aggressively:
+
+### Next.js Image Component
+
+```typescript
+import Image from 'next/image';
+
+export function OptimizedImage() {
+  return (
+    <Image
+      src="/hero.jpg"
+      alt="Hero image"
+      width={1200}
+      height={630}
+      priority // For above-the-fold images
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,..."
+    />
+  );
+}
+```
+
+### Modern Image Formats
+
+Use WebP and AVIF formats with fallbacks:
+
+```html
+<picture>
+  <source srcset="image.avif" type="image/avif" />
+  <source srcset="image.webp" type="image/webp" />
+  <img src="image.jpg" alt="Description" />
+</picture>
+```
+
+### Lazy Loading
+
+Lazy load below-the-fold images:
+
+```typescript
+export function LazyImage({ src, alt }) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      loading="lazy"
+      width={800}
+      height={600}
+    />
+  );
+}
+```
+
+## Code Splitting and Lazy Loading
+
+Break up your JavaScript bundles to reduce initial load time.
+
+### Dynamic Imports
+
+```typescript
+import dynamic from 'next/dynamic';
+
+// Component will only load when needed
+const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
+  loading: () => <div>Loading...</div>,
+  ssr: false, // Disable server-side rendering if not needed
+});
+
+export function Page() {
+  const [showHeavy, setShowHeavy] = useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setShowHeavy(true)}>
+        Load Heavy Component
+      </button>
+      {showHeavy && <HeavyComponent />}
+    </div>
+  );
+}
+```
+
+### Route-Based Code Splitting
+
+Next.js automatically code-splits by route:
+
+```typescript
+// app/dashboard/page.tsx
+export default function Dashboard() {
+  // This code only loads when visiting /dashboard
+  return <DashboardContent />;
+}
+
+// app/settings/page.tsx
+export default function Settings() {
+  // This code only loads when visiting /settings
+  return <SettingsContent />;
+}
+```
+
+## Font Optimization
+
+Fonts can significantly impact performance if not optimized.
+
+### Next.js Font Optimization
+
+```typescript
+import { Inter, Georgia } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const georgia = Georgia({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-georgia',
+});
+
+export default function RootLayout({ children }) {
+  return (
+    <html className={`${inter.variable} ${georgia.variable}`}>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+### Preload Critical Fonts
+
+```html
+<link
+  rel="preload"
+  href="/fonts/custom-font.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+```
+
+## Caching Strategies
+
+Implement effective caching to reduce server load and improve response times.
+
+### HTTP Caching Headers
+
+```typescript
+// next.config.ts
+export default {
+  async headers() {
+    return [
+      {
+        source: '/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=60, stale-while-revalidate=30',
+          },
+        ],
+      },
+    ];
+  },
+};
+```
+
+### Service Worker Caching
+
+```javascript
+// service-worker.js
+const CACHE_NAME = 'v1';
+const STATIC_ASSETS = [
+  '/',
+  '/styles.css',
+  '/script.js',
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(STATIC_ASSETS))
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => response || fetch(event.request))
+  );
+});
+```
+
+## Resource Hints
+
+Use resource hints to optimize resource loading:
+
+### Preconnect
+
+Establish early connections to important third-party origins:
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://cdn.example.com" />
+```
+
+### DNS Prefetch
+
+Resolve DNS for third-party domains:
+
+```html
+<link rel="dns-prefetch" href="https://analytics.example.com" />
+```
+
+### Prefetch
+
+Prefetch resources for future navigation:
+
+```typescript
+// Prefetch the next page
+<Link href="/dashboard" prefetch={true}>
+  Go to Dashboard
+</Link>
+```
+
+## JavaScript Optimization
+
+### Minimize Third-Party Scripts
+
+Audit and optimize third-party scripts:
+
+```typescript
+// Use next/script for better control
+import Script from 'next/script';
+
+export function Analytics() {
+  return (
+    <Script
+      src="https://analytics.example.com/script.js"
+      strategy="afterInteractive" // or "lazyOnload"
+    />
+  );
+}
+```
+
+### Tree Shaking
+
+Ensure proper tree shaking by using ES6 imports:
+
+```typescript
+// Bad - imports entire library
+import _ from 'lodash';
+
+// Good - imports only what you need
+import debounce from 'lodash/debounce';
+
+// Even better - use modern alternatives
+import { debounce } from 'es-toolkit';
+```
+
+### Web Workers
+
+Offload heavy computations to web workers:
+
+```typescript
+// worker.ts
+self.onmessage = (e) => {
+  const result = heavyComputation(e.data);
+  self.postMessage(result);
+};
+
+// main.ts
+const worker = new Worker(new URL('./worker.ts', import.meta.url));
+
+worker.onmessage = (e) => {
+  console.log('Result:', e.data);
+};
+
+worker.postMessage(inputData);
+```
+
+## Database and API Optimization
+
+### Response Compression
+
+Enable gzip or Brotli compression:
+
+```typescript
+// Next.js automatically compresses responses
+// Verify with response headers
+fetch('/api/data')
+  .then(response => {
+    console.log('Content-Encoding:', response.headers.get('content-encoding'));
+  });
+```
+
+### API Response Caching
+
+```typescript
+// app/api/data/route.ts
+export async function GET() {
+  const data = await fetchData();
+
+  return Response.json(data, {
+    headers: {
+      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30',
+    },
+  });
+}
+```
+
+### Database Query Optimization
+
+```typescript
+// Bad - N+1 query problem
+const users = await db.user.findMany();
+for (const user of users) {
+  user.posts = await db.post.findMany({ where: { userId: user.id } });
+}
+
+// Good - use includes/joins
+const users = await db.user.findMany({
+  include: {
+    posts: true,
+  },
+});
+```
+
+## Monitoring and Measuring
+
+### Real User Monitoring (RUM)
+
+Collect performance data from real users:
+
+```typescript
+// web-vitals
+import { onCLS, onFID, onLCP, onFCP, onTTFB, onINP } from 'web-vitals';
+
+function sendToAnalytics(metric) {
+  const body = JSON.stringify(metric);
+  const url = '/api/analytics';
+
+  // Use sendBeacon if available
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, body);
+  } else {
+    fetch(url, { body, method: 'POST', keepalive: true });
+  }
+}
+
+onCLS(sendToAnalytics);
+onFID(sendToAnalytics);
+onLCP(sendToAnalytics);
+onFCP(sendToAnalytics);
+onTTFB(sendToAnalytics);
+onINP(sendToAnalytics);
+```
+
+### Performance Budget
+
+Set and enforce performance budgets:
+
+```javascript
+// lighthouserc.js
+module.exports = {
+  ci: {
+    collect: {
+      numberOfRuns: 3,
+    },
+    assert: {
+      assertions: {
+        'first-contentful-paint': ['error', { maxNumericValue: 2000 }],
+        'largest-contentful-paint': ['error', { maxNumericValue: 2500 }],
+        'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
+        'total-blocking-time': ['error', { maxNumericValue: 300 }],
+      },
+    },
+  },
+};
+```
+
+## Performance Checklist
+
+Here's a quick checklist for web performance in 2025:
+
+- [ ] All images optimized and using modern formats (WebP/AVIF)
+- [ ] Critical images use `priority` flag
+- [ ] Fonts are optimized with `next/font` or preloaded
+- [ ] Code splitting implemented for large components
+- [ ] Third-party scripts loaded with appropriate strategy
+- [ ] Resource hints (preconnect, dns-prefetch) configured
+- [ ] HTTP caching headers properly set
+- [ ] API responses compressed
+- [ ] Database queries optimized
+- [ ] Core Web Vitals monitored
+- [ ] Performance budget defined and enforced
+- [ ] Lighthouse CI integrated in deployment pipeline
+
+## Conclusion
+
+Web performance optimization is an ongoing process, not a one-time task. By focusing on Core Web Vitals, implementing modern optimization techniques, and continuously monitoring your metrics, you can deliver exceptional user experiences that translate to better engagement and business outcomes.
+
+Remember these key principles:
+
+1. **Measure first** - You can't improve what you don't measure
+2. **Focus on user experience** - Optimize for real-world conditions
+3. **Automate monitoring** - Set up continuous performance tracking
+4. **Set budgets** - Prevent performance regressions
+5. **Iterate constantly** - Performance is never "done"
+
+Start with the quick wins (image optimization, font loading), then move to more advanced techniques (code splitting, caching strategies). Your users—and your business metrics—will thank you.
