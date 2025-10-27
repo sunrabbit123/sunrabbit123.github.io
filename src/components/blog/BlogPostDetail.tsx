@@ -1,5 +1,9 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { MDXRemote } from 'next-mdx-remote';
+import { useMDXComponents } from '../../mdx-components';
 import { colors } from '../../theme/colors.stylex';
 import { fonts, fontSizes, fontWeights, lineHeights } from '../../theme/typography.stylex';
 import { spacing, borderRadius } from '../../theme/spacing.stylex';
@@ -90,12 +94,21 @@ const styles = stylex.create({
   body: {
     padding: `0 ${spacing.xl} ${spacing.xl} ${spacing.xl}`,
   },
-  content_text: {
-    fontSize: fontSizes.lg,
+  mdxContent: {
+    fontSize: fontSizes.base,
     lineHeight: lineHeights.relaxed,
-    color: colors.textSecondary,
-    whiteSpace: 'pre-wrap',
+    color: colors.textPrimary,
     fontFamily: fonts.body,
+  },
+  errorState: {
+    fontSize: fontSizes.base,
+    color: colors.error,
+    backgroundColor: '#fee',
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: colors.error,
   },
   tags: {
     display: 'flex',
@@ -233,8 +246,14 @@ export function BlogPostDetail({ post, onClose }: BlogPostDetailProps) {
         </div>
 
         <div {...stylex.props(styles.body)}>
-          <div {...stylex.props(styles.content_text)}>
-            {post.content}
+          <div {...stylex.props(styles.mdxContent)}>
+            {post.serializedContent ? (
+              <MDXRemote {...post.serializedContent} components={useMDXComponents({})} />
+            ) : (
+              <div {...stylex.props(styles.errorState)}>
+                <strong>Error:</strong> Content could not be loaded
+              </div>
+            )}
           </div>
 
           <div {...stylex.props(styles.tags)}>

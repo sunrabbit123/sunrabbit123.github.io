@@ -2,6 +2,8 @@
  * Core blog data types
  */
 
+import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
+
 export interface Author {
   id: string;
   name: string;
@@ -17,6 +19,7 @@ export interface BlogPost {
   publishedDate: Date;
   excerpt: string;
   content: string;
+  serializedContent?: MDXRemoteSerializeResult; // Optional serialized MDX for rendering
   featuredImage: string;
   categories: string[];
   tags: string[];
