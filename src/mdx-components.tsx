@@ -1,8 +1,8 @@
 import type { MDXComponents } from 'mdx/types';
 import * as stylex from '@stylexjs/stylex';
-import { colors } from './src/theme/colors.stylex';
-import { fonts, fontSizes, fontWeights, lineHeights } from './src/theme/typography.stylex';
-import { spacing, borderRadius } from './src/theme/spacing.stylex';
+import { colors } from './theme/colors.stylex';
+import { fonts, fontSizes, fontWeights, lineHeights } from './theme/typography.stylex';
+import { spacing, borderRadius } from './theme/spacing.stylex';
 
 const styles = stylex.create({
   h1: {
