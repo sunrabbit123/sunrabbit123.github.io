@@ -47,6 +47,3 @@ export interface BlogService {
  * Uses MDX-based implementation for static content
  */
 export { mdxBlogService as blogService } from './mdxBlogService';
-
-// Uncomment below to use mock data service instead
-// export { blogService } from '../data/mockBlogService';
