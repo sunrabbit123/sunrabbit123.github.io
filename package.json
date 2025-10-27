@@ -10,10 +10,17 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.4",
+    "@mdx-js/loader": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
+    "@next/mdx": "^16.0.0",
     "@stylexjs/stylex": "^0.16.1",
+    "@types/mdx": "^2.0.13",
+    "gray-matter": "^4.0.3",
     "next": "^15.3.2",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@stylexjs/babel-plugin": "^0.16.2",
