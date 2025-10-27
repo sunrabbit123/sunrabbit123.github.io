@@ -6,7 +6,7 @@ import { BlogPostList } from './BlogPostList';
 import { BlogPostDetail } from './BlogPostDetail';
 import { CategoryFilter } from './CategoryFilter';
 import { colors } from '../../theme/colors.stylex';
-import { spacing } from '../../theme/spacing.stylex';
+import { borderRadius, spacing } from '../../theme/spacing.stylex';
 
 const styles = stylex.create({
   errorContainer: {
@@ -14,8 +14,10 @@ const styles = stylex.create({
     margin: `${spacing.xl} auto`,
     maxWidth: '600px',
     backgroundColor: '#fee',
-    border: `2px solid ${colors.error}`,
-    borderRadius: '8px',
+    borderColor: colors.error,
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderRadius: borderRadius.md,
     textAlign: 'center',
   },
   errorTitle: {
@@ -32,8 +34,8 @@ const styles = stylex.create({
     padding: `${spacing.sm} ${spacing.md}`,
     backgroundColor: colors.primaryDark,
     color: colors.textInverse,
-    border: 'none',
-    borderRadius: '4px',
+    borderStyle: 'none',
+    borderRadius: borderRadius.sm,
     cursor: 'pointer',
     fontSize: '1rem',
     ':hover': {

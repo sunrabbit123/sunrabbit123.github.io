@@ -1,6 +1,5 @@
 import path from "path";
 import { fileURLToPath } from "url";
-import stylexPlugin from "@stylexswc/nextjs-plugin";
 import type { NextConfig } from "next";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,14 +13,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default stylexPlugin({
-  rsOptions: {
-    aliases: {
-      "@/*": [path.join(__dirname, "src/*")],
-    },
-    unstable_moduleResolution: {
-      type: "commonJS",
-      rootDir: __dirname,
-    },
-  },
-})(nextConfig);
+export default nextConfig;
