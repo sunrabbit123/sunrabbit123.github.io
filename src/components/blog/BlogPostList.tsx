@@ -35,10 +35,9 @@ const styles = stylex.create({
 interface BlogPostListProps {
   posts: BlogPost[];
   loading?: boolean;
-  onPostClick?: (post: BlogPost) => void;
 }
 
-export const BlogPostList = memo(function BlogPostList({ posts, loading, onPostClick }: BlogPostListProps) {
+export const BlogPostList = memo(function BlogPostList({ posts, loading }: BlogPostListProps) {
   if (loading) {
     return (
       <div {...stylex.props(styles.container)}>
@@ -62,7 +61,6 @@ export const BlogPostList = memo(function BlogPostList({ posts, loading, onPostC
           <BlogPostCard
             key={post.id}
             post={post}
-            onClick={() => onPostClick?.(post)}
           />
         ))}
       </div>
