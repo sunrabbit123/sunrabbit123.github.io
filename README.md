@@ -1,218 +1,200 @@
-# DevBlog - React Blog Display Application
+# DevBlog - Personal Blog
 
-A beautiful, warm-themed blog display application built with React 19, TypeScript, and StyleX. Features a warm brown color palette and a clean, responsive design.
+A personal blog built with Next.js 15, React 19, StyleX, and MDX.
 
-## Features
+## Table of Contents
 
-- **Modern Tech Stack**: React 19, TypeScript, Vite, StyleX
-- **Warm Brown Theme**: Cozy, inviting color palette with browns, beiges, and warm oranges
-- **Responsive Design**: Works seamlessly on mobile, tablet, and desktop
-- **Clean Architecture**: Well-separated data layer for easy content replacement
-- **Blog Features**:
-  - Grid view of blog posts with cards
-  - Category filtering
-  - Modal view for full post content
-  - Author information and metadata
-  - Tags and categories
-  - Featured images
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Creating Blog Posts](#creating-blog-posts)
+- [Modifying the Site](#modifying-the-site)
+- [Build & Deployment](#build--deployment)
+- [Available Scripts](#available-scripts)
+
+## Tech Stack
+
+- **Next.js** 15.3.2 with App Router
+- **React** 19.2.0
+- **TypeScript** 5.8.3
+- **StyleX** 0.16.1
+- **MDX** 3.1.1
+- **Package Manager**: npm
+
+## Prerequisites
+
+- **Node.js** 18+ or 20+ (LTS recommended)
+- **npm** (comes with Node.js)
+
+## Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/sunrabbit123/sunrabbit123.github.io.git
+cd sunrabbit123.github.io
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+# Open http://localhost:3000 in your browser
+
+# Build for production
+npm run build
+
+# Start production server (for testing)
+npm start
+```
 
 ## Project Structure
 
 ```
-src/
-├── components/
-│   ├── blog/           # Blog-specific components
-│   │   ├── BlogPage.tsx          # Main blog page container
-│   │   ├── BlogPostCard.tsx      # Individual post card
-│   │   ├── BlogPostList.tsx      # Grid of post cards
-│   │   ├── BlogPostDetail.tsx    # Modal for full post view
-│   │   └── CategoryFilter.tsx    # Category filter buttons
-│   └── layout/         # Layout components
-│       └── Header.tsx            # Site header
-├── services/
-│   ├── blogService.ts           # Blog service interface
-│   └── mdxBlogService.ts        # MDX-based blog service implementation
-├── theme/
-│   ├── colors.stylex.ts         # Color theme variables
-│   ├── typography.stylex.ts     # Typography variables
-│   └── spacing.stylex.ts        # Spacing and layout variables
-├── types/
-│   └── blog.ts                  # TypeScript interfaces
-├── pages/
-│   └── index.tsx                # Main app entry
-└── index.tsx                    # React root
-content/
-└── posts/              # MDX blog post files
-    ├── getting-started.mdx
-    ├── nextjs-app-router.mdx
-    └── ...
+.
+├── .babelrc.js              # Babel config with StyleX plugin
+├── .github/                 # GitHub workflows and actions
+├── application/             # Application-specific logic
+│   └── blog/
+├── content/                 # MDX blog content
+│   └── posts/               # Blog post MDX files
+│       ├── building-design-systems.mdx
+│       ├── developer-career-growth.mdx
+│       ├── getting-started-with-mdx.mdx
+│       ├── typescript-best-practices-2025.mdx
+│       └── web-performance-optimization.mdx
+├── next.config.ts           # Next.js configuration with MDX support
+├── package.json             # npm dependencies and scripts
+├── postcss.config.js        # PostCSS config for StyleX plugin
+├── src/
+│   ├── app/                 # Next.js App Router
+│   │   ├── globals.css      # Global styles
+│   │   ├── layout.tsx       # Root layout with metadata
+│   │   └── page.tsx         # Homepage
+│   ├── components/
+│   │   ├── blog/            # Blog-specific components
+│   │   │   ├── BlogPage.tsx          # Main blog page container
+│   │   │   ├── BlogPostCard.tsx      # Individual post card
+│   │   │   ├── BlogPostDetail.tsx    # Modal for full post view
+│   │   │   ├── BlogPostList.tsx      # Grid of post cards
+│   │   │   └── CategoryFilter.tsx    # Category filter buttons
+│   │   └── layout/          # Layout components
+│   │       └── Header.tsx            # Site header
+│   ├── lib/
+│   │   └── mdx.ts           # MDX utility functions
+│   ├── mdx-components.tsx   # MDX component overrides
+│   ├── services/
+│   │   ├── blogService.ts           # Blog service interface
+│   │   └── mdxBlogService.ts        # MDX implementation
+│   ├── theme/               # StyleX design tokens
+│   │   ├── colors.stylex.ts         # Color palette
+│   │   ├── spacing.stylex.ts        # Spacing scale
+│   │   └── typography.stylex.ts     # Typography tokens
+│   └── types/
+│       └── blog.ts          # TypeScript type definitions
+└── tsconfig.json            # TypeScript configuration
 ```
 
-## Getting Started
+## Creating Blog Posts
 
-### Prerequisites
+Add a new `.mdx` file to `content/posts/`:
 
-- Node.js 18+
-- pnpm (or npm/yarn)
-
-### Installation
-
-```bash
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm dev
-
-# Build for production
-pnpm build
-
-# Preview production build
-pnpm preview
-```
-
-## Content Architecture
-
-The application uses MDX files for blog content, providing a clean separation between content and code:
-
-### MDX-Based Content System
-
-Blog posts are written in MDX format (Markdown with JSX) and stored in the `content/posts/` directory. Each post includes frontmatter metadata:
+**Example: content/posts/my-new-post.mdx**
 
 ```mdx
 ---
 title: "Your Post Title"
-description: "Post excerpt"
-date: "2025-10-15"
-author: "Author Name"
-categories: ["Web Development", "React"]
-tags: ["Next.js", "TypeScript"]
+slug: "your-post-title"
+publishedDate: "2025-10-28"
+excerpt: "A brief description of your post"
+featuredImage: "https://example.com/image.jpg"
+categories: ["Development", "Tutorial"]
+tags: ["nextjs", "react", "typescript"]
+readTime: 5
+author:
+  name: "Your Name"
+  avatar: "https://example.com/avatar.jpg"
+  bio: "Your bio here"
 ---
 
-Your content here with **Markdown** formatting and React components.
+Your content starts here. You can use **Markdown** formatting.
+
+## Headings
+
+- Lists
+- **Bold** and *italic* text
+- [Links](https://example.com)
+- Code blocks
+
+```javascript
+const example = "Hello World";
+console.log(example);
+```
 ```
 
-### BlogService Interface
+**Required Frontmatter Fields:**
+- `title`: Post title
+- `slug`: URL-friendly identifier
+- `publishedDate`: Publication date (YYYY-MM-DD)
+- `excerpt`: Short description
 
-The application uses a clean service layer pattern:
+**Optional Frontmatter Fields:**
+- `featuredImage`: Header image URL
+- `categories`: Array of category strings
+- `tags`: Array of tag strings
+- `readTime`: Estimated reading time in minutes
+- `author`: Author object with name, avatar, bio
 
-```typescript
-interface BlogService {
-  getAllPosts(): Promise<BlogPost[]>;
-  getPostById(id: string): Promise<BlogPost | null>;
-  getPostBySlug(slug: string): Promise<BlogPost | null>;
-  getPostsByCategory(category: string): Promise<BlogPost[]>;
-  getPostsByTag(tag: string): Promise<BlogPost[]>;
-  getCategories(): Promise<Category[]>;
-  getTags(): Promise<string[]>;
-}
+## Modifying the Site
+
+### Key Files to Edit
+
+**Blog Content:**
+- `content/posts/*.mdx` - Blog post files
+
+**Components:**
+- `src/components/blog/` - Blog-related components
+- `src/components/layout/Header.tsx` - Site header
+
+**Styling:**
+- `src/theme/colors.stylex.ts` - Color palette
+- `src/theme/spacing.stylex.ts` - Spacing scale
+- `src/theme/typography.stylex.ts` - Typography tokens
+
+**Layout:**
+- `src/app/layout.tsx` - Root layout and metadata
+- `src/app/page.tsx` - Homepage
+
+**Configuration:**
+- `next.config.ts` - Next.js configuration
+- `.babelrc.js` - Babel configuration for StyleX
+- `postcss.config.js` - PostCSS configuration for StyleX
+- `tsconfig.json` - TypeScript configuration
+
+## Build & Deployment
+
+### Building for Production
+
+```bash
+npm run build
 ```
 
-### Adding New Content
+This generates a static site in the `out/` directory.
 
-1. Create a new `.mdx` file in `content/posts/`
-2. Add frontmatter metadata at the top
-3. Write your content using Markdown and MDX
-4. The MDXBlogService automatically discovers and processes new posts
+### Deployment
 
-### Switching Data Sources
+Deploy the `out/` directory to any static hosting service:
 
-To connect to a different data source (CMS, API, etc.):
+**GitHub Pages / Vercel / Netlify / Cloudflare Pages:**
+- Build command: `npm run build`
+- Output directory: `out`
 
-1. Create a new service class that implements `BlogService`
-2. Update the export in `src/services/blogService.ts`:
-   ```typescript
-   export { yourNewService as blogService } from './yourNewService';
-   ```
+## Available Scripts
 
-No component code needs to change!
-
-## Theme Customization
-
-The warm brown theme is defined in `src/theme/colors.stylex.ts`. Key colors:
-
-- **Primary**: Saddle Brown (#6B3E2E) - headers, buttons
-- **Secondary**: Tan (#D2B48C) - backgrounds, cards
-- **Accent**: Burnt Orange (#CC5500) - links, highlights
-- **Background**: Cream (#F5F5DC) - page background
-- **Text**: Dark Brown (#3E2723) - body text
-
-To customize, edit the color variables and the entire app will update automatically.
-
-## StyleX Usage
-
-This project uses StyleX for styling, which provides:
-
-- **Type-safe styles**: Catch errors at compile time
-- **Atomic CSS**: Minimal CSS bundle size
-- **Zero runtime**: All CSS generated at build time
-- **Scoped styles**: No naming collisions
-
-Example:
-
-```typescript
-import * as stylex from '@stylexjs/stylex';
-import { colors } from '../theme/colors.stylex';
-
-const styles = stylex.create({
-  card: {
-    backgroundColor: colors.backgroundTertiary,
-    padding: spacing.lg,
-  }
-});
-
-function Card() {
-  return <div {...stylex.props(styles.card)}>Content</div>;
-}
-```
-
-## Build Output
-
-The build process generates:
-
-- `dist/index.html` - Entry HTML file
-- `dist/stylex.css` - Optimized CSS (atomic classes)
-- `dist/assets/` - JavaScript bundles
-
-All assets use relative paths (`base: "./"`) for flexible hosting.
-
-## Deployment
-
-This is a static site and can be deployed to:
-
-- Vercel
-- Netlify
-- GitHub Pages
-- Cloudflare Pages
-- Any static hosting service
-
-Simply upload the `dist/` folder after running `pnpm build`.
-
-## Technologies
-
-- **React 19.2.0** - UI library
-- **TypeScript** - Type safety
-- **Vite 7.1.9** - Build tool and dev server
-- **StyleX 0.16.1** - Styling solution
-- **Client-side only** - No server required
-
-## Future Enhancements
-
-Potential additions (not currently implemented):
-
-- [ ] Search functionality
-- [ ] Pagination for large post lists
-- [ ] Markdown rendering for post content
-- [ ] Comment system integration
-- [ ] Share buttons
-- [ ] Reading progress indicator
-- [ ] Dark mode toggle
-- [ ] RSS feed generation
-
-## License
-
-This is a demo project for educational and portfolio purposes.
+- **`npm run dev`**: Start development server at http://localhost:3000
+- **`npm run build`**: Create production build
+- **`npm start`**: Start production server (for testing the build locally)
 
 ## Author
 
-Built as a demonstration of modern React development practices with a focus on clean architecture and beautiful design.
+[sunrabbit123](https://github.com/sunrabbit123)
