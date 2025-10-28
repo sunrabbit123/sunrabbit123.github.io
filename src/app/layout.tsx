@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Header } from "../components/layout/Header";
 import * as stylex from "@stylexjs/stylex";
 import { colors } from "../theme/colors.stylex";
 import { fonts } from "../theme/typography.stylex";
@@ -39,7 +38,6 @@ export default function RootLayout({
   return (
     <html lang="en" {...stylex.props(styles.html)}>
       <body {...stylex.props(styles.body)}>
-        <Header />
         <main {...stylex.props(styles.main)}>{children}</main>
       </body>
     </html>
