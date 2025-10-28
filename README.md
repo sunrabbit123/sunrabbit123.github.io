@@ -29,11 +29,9 @@ src/
 │   │   └── CategoryFilter.tsx    # Category filter buttons
 │   └── layout/         # Layout components
 │       └── Header.tsx            # Site header
-├── data/
-│   ├── mockData.ts              # Mock blog post data
-│   └── mockBlogService.ts       # Mock service implementation
 ├── services/
-│   └── blogService.ts           # Blog service interface
+│   ├── blogService.ts           # Blog service interface
+│   └── mdxBlogService.ts        # MDX-based blog service implementation
 ├── theme/
 │   ├── colors.stylex.ts         # Color theme variables
 │   ├── typography.stylex.ts     # Typography variables
@@ -43,6 +41,11 @@ src/
 ├── pages/
 │   └── index.tsx                # Main app entry
 └── index.tsx                    # React root
+content/
+└── posts/              # MDX blog post files
+    ├── getting-started.mdx
+    ├── nextjs-app-router.mdx
+    └── ...
 ```
 
 ## Getting Started
@@ -68,11 +71,30 @@ pnpm build
 pnpm preview
 ```
 
-## Data Layer Architecture
+## Content Architecture
 
-The application uses a clean service layer pattern that makes it easy to swap data sources:
+The application uses MDX files for blog content, providing a clean separation between content and code:
+
+### MDX-Based Content System
+
+Blog posts are written in MDX format (Markdown with JSX) and stored in the `content/posts/` directory. Each post includes frontmatter metadata:
+
+```mdx
+---
+title: "Your Post Title"
+description: "Post excerpt"
+date: "2025-10-15"
+author: "Author Name"
+categories: ["Web Development", "React"]
+tags: ["Next.js", "TypeScript"]
+---
+
+Your content here with **Markdown** formatting and React components.
+```
 
 ### BlogService Interface
+
+The application uses a clean service layer pattern:
 
 ```typescript
 interface BlogService {
@@ -86,18 +108,21 @@ interface BlogService {
 }
 ```
 
-### Replacing the Data Source
+### Adding New Content
 
-To connect to a real API or CMS:
+1. Create a new `.mdx` file in `content/posts/`
+2. Add frontmatter metadata at the top
+3. Write your content using Markdown and MDX
+4. The MDXBlogService automatically discovers and processes new posts
+
+### Switching Data Sources
+
+To connect to a different data source (CMS, API, etc.):
 
 1. Create a new service class that implements `BlogService`
-2. Replace the import in components:
+2. Update the export in `src/services/blogService.ts`:
    ```typescript
-   // Before
-   import { blogService } from '../data/mockBlogService';
-
-   // After
-   import { blogService } from '../services/apiBlogService';
+   export { yourNewService as blogService } from './yourNewService';
    ```
 
 No component code needs to change!
