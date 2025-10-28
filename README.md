@@ -1,43 +1,26 @@
-# DevBlog - Modern Next.js Blog Platform
+# DevBlog - Personal Blog
 
-A modern, static blog platform built with Next.js 15, React 19, StyleX, and MDX. Features a warm brown color palette, static site generation, and a clean service-layer architecture for managing MDX-based blog content.
+A personal blog built with Next.js 15, React 19, StyleX, and MDX.
 
 ## Table of Contents
 
 - [Tech Stack](#tech-stack)
-- [Key Features](#key-features)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [Creating Blog Posts](#creating-blog-posts)
-- [Configuration Files](#configuration-files)
+- [Modifying the Site](#modifying-the-site)
 - [Build & Deployment](#build--deployment)
-- [Development](#development)
 - [Available Scripts](#available-scripts)
-- [Theme Customization](#theme-customization)
-- [License](#license)
 
 ## Tech Stack
 
 - **Next.js** 15.3.2 with App Router
 - **React** 19.2.0
 - **TypeScript** 5.8.3
-- **StyleX** 0.16.1 - Meta's atomic CSS-in-JS styling system
-- **MDX** 3.1.1 - Markdown with JSX for blog content
+- **StyleX** 0.16.1
+- **MDX** 3.1.1
 - **Package Manager**: npm
-- **Output**: Static site generation (SSG)
-
-## Key Features
-
-- **Static Site Generation**: Pre-rendered pages for optimal performance
-- **MDX-Based Content**: Write blog posts in Markdown with React components
-- **StyleX Atomic CSS**: Type-safe, zero-runtime styling with minimal CSS output
-- **Responsive Design**: Mobile-first, works seamlessly across all devices
-- **Warm Brown Theme**: Cozy, inviting color palette with browns, beiges, and warm oranges
-- **Service Layer Architecture**: Clean separation between data access and UI
-- **Category & Tag System**: Organize and filter blog posts
-- **Frontmatter Metadata**: Rich post metadata including author, dates, read time
-- **Type-Safe**: Full TypeScript support throughout the application
 
 ## Prerequisites
 
@@ -114,7 +97,7 @@ npm start
 
 ## Creating Blog Posts
 
-To create a new blog post, add a `.mdx` file to `content/posts/`:
+Add a new `.mdx` file to `content/posts/`:
 
 **Example: content/posts/my-new-post.mdx**
 
@@ -123,7 +106,7 @@ To create a new blog post, add a `.mdx` file to `content/posts/`:
 title: "Your Post Title"
 slug: "your-post-title"
 publishedDate: "2025-10-28"
-excerpt: "A brief description of your post that appears in the card view"
+excerpt: "A brief description of your post"
 featuredImage: "https://example.com/image.jpg"
 categories: ["Development", "Tutorial"]
 tags: ["nextjs", "react", "typescript"]
@@ -134,7 +117,7 @@ author:
   bio: "Your bio here"
 ---
 
-Your content starts here. You can use **Markdown** formatting, including:
+Your content starts here. You can use **Markdown** formatting.
 
 ## Headings
 
@@ -142,214 +125,76 @@ Your content starts here. You can use **Markdown** formatting, including:
 - **Bold** and *italic* text
 - [Links](https://example.com)
 - Code blocks
-- And even React components!
 
 ```javascript
 const example = "Hello World";
 console.log(example);
 ```
-
-MDX also lets you embed React components directly in your content.
 ```
 
-**Frontmatter Fields:**
-- `title` (required): Post title
-- `slug` (required): URL-friendly identifier
-- `publishedDate` (required): Publication date (YYYY-MM-DD)
-- `excerpt` (required): Short description for card view
-- `featuredImage` (optional): Header image URL
-- `categories` (optional): Array of category strings
-- `tags` (optional): Array of tag strings
-- `readTime` (optional): Estimated reading time in minutes
-- `author` (optional): Author object with name, avatar, bio
+**Required Frontmatter Fields:**
+- `title`: Post title
+- `slug`: URL-friendly identifier
+- `publishedDate`: Publication date (YYYY-MM-DD)
+- `excerpt`: Short description
 
-The `MDXBlogService` automatically discovers and processes new posts at build time.
+**Optional Frontmatter Fields:**
+- `featuredImage`: Header image URL
+- `categories`: Array of category strings
+- `tags`: Array of tag strings
+- `readTime`: Estimated reading time in minutes
+- `author`: Author object with name, avatar, bio
 
-## Configuration Files
+## Modifying the Site
 
-### next.config.ts
+### Key Files to Edit
 
-Next.js configuration with MDX and static export settings:
+**Blog Content:**
+- `content/posts/*.mdx` - Blog post files
 
-```typescript
-const nextConfig: NextConfig = {
-  output: "export",              // Static site generation
-  basePath: "",                  // Root path
-  images: { unoptimized: true }, // No image optimization for static export
-  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
-};
-```
+**Components:**
+- `src/components/blog/` - Blog-related components
+- `src/components/layout/Header.tsx` - Site header
 
-### .babelrc.js
+**Styling:**
+- `src/theme/colors.stylex.ts` - Color palette
+- `src/theme/spacing.stylex.ts` - Spacing scale
+- `src/theme/typography.stylex.ts` - Typography tokens
 
-Babel configuration for StyleX plugin:
+**Layout:**
+- `src/app/layout.tsx` - Root layout and metadata
+- `src/app/page.tsx` - Homepage
 
-```javascript
-module.exports = {
-  presets: ['next/babel'],
-  plugins: [
-    ['@stylexjs/babel-plugin', {
-      dev: false,
-      genConditionalClasses: true,
-      unstable_moduleResolution: { type: 'commonJS' }
-    }]
-  ]
-}
-```
-
-### postcss.config.js
-
-PostCSS configuration for StyleX CSS generation:
-
-```javascript
-module.exports = {
-  plugins: {
-    '@stylexjs/postcss-plugin': {
-      cwd: __dirname,
-      include: ['./**/*.{js,jsx,ts,tsx}'],
-      useCSSLayers: true,
-    }
-  }
-}
-```
-
-### tsconfig.json
-
-TypeScript configuration with path aliases and Next.js settings.
+**Configuration:**
+- `next.config.ts` - Next.js configuration
+- `.babelrc.js` - Babel configuration for StyleX
+- `postcss.config.js` - PostCSS configuration for StyleX
+- `tsconfig.json` - TypeScript configuration
 
 ## Build & Deployment
 
 ### Building for Production
 
 ```bash
-# Clean previous builds and create production build
 npm run build
 ```
 
-This generates a static site in the `out/` directory with:
-- Pre-rendered HTML pages
-- Optimized JavaScript bundles
-- Atomic CSS from StyleX
-- All assets with relative paths
+This generates a static site in the `out/` directory.
 
-### Deployment Options
+### Deployment
 
-This static site can be deployed to any static hosting service:
+Deploy the `out/` directory to any static hosting service:
 
-**GitHub Pages:**
-```bash
-# The out/ directory can be deployed to gh-pages branch
-npm run build
-# Use gh-pages package or GitHub Actions to deploy out/ directory
-```
-
-**Vercel (Recommended for Next.js):**
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
-```
-
-**Netlify:**
+**GitHub Pages / Vercel / Netlify / Cloudflare Pages:**
 - Build command: `npm run build`
-- Publish directory: `out`
-
-**Cloudflare Pages:**
-- Build command: `npm run build`
-- Build output directory: `out`
-
-**Other Static Hosts:**
-Simply upload the `out/` folder to any static file hosting service.
-
-## Development
-
-### Adding New Components
-
-1. Create component file in `src/components/`
-2. Use StyleX for styling with design tokens from `src/theme/`
-3. Import and use in pages or other components
-
-Example:
-
-```typescript
-// src/components/MyComponent.tsx
-import * as stylex from '@stylexjs/stylex';
-import { colors } from '../theme/colors.stylex';
-
-const styles = stylex.create({
-  container: {
-    backgroundColor: colors.backgroundPrimary,
-    padding: '1rem',
-  }
-});
-
-export function MyComponent() {
-  return <div {...stylex.props(styles.container)}>Hello</div>;
-}
-```
-
-### Modifying Theme Tokens
-
-Theme tokens are defined in `src/theme/*.stylex.ts`:
-
-- **colors.stylex.ts**: Color palette (primary, secondary, accent, backgrounds, text)
-- **spacing.stylex.ts**: Spacing scale (xs, sm, md, lg, xl, etc.)
-- **typography.stylex.ts**: Font sizes, weights, line heights
-
-Edit these files to change the design system globally.
-
-### Extending the Blog Service
-
-To use a different data source (CMS, API, database):
-
-1. Create a new service class implementing `BlogService` interface
-2. Update the export in `src/services/blogService.ts`:
-   ```typescript
-   export { yourNewService as blogService } from './yourNewService';
-   ```
-3. All components automatically use the new service
-
-No component code needs to change!
+- Output directory: `out`
 
 ## Available Scripts
 
 - **`npm run dev`**: Start development server at http://localhost:3000
-- **`npm run build`**: Create production build in `out/` directory
-- **`npm start`**: Start production server (for local testing of build)
-- **`npm run predev`**: Clean `.next` and `out` directories before dev
-- **`npm run prebuild`**: Clean `.next` and `out` directories before build
-
-## Theme Customization
-
-The warm brown theme is defined in `src/theme/colors.stylex.ts`:
-
-**Color Palette:**
-- **Primary**: Saddle Brown (#6B3E2E) - headers, buttons
-- **Secondary**: Tan (#D2B48C) - secondary actions, borders
-- **Accent**: Burnt Orange (#CC5500) - links, highlights, CTAs
-- **Background Primary**: Cream (#F5F5DC) - page background
-- **Background Secondary**: Light Beige - card backgrounds
-- **Background Tertiary**: Off-white - elevated surfaces
-- **Text Primary**: Dark Brown (#3E2723) - body text
-- **Text Secondary**: Medium Brown - secondary text
-
-To customize colors, edit `src/theme/colors.stylex.ts` and all components will automatically update.
-
-## License
-
-This is a personal blog/portfolio project.
+- **`npm run build`**: Create production build
+- **`npm start`**: Start production server (for testing the build locally)
 
 ## Author
 
-Built with modern web technologies and best practices. Visit [sunrabbit123](https://github.com/sunrabbit123) for more projects.
-
----
-
-**Built with:**
-- [Next.js 15](https://nextjs.org/) - The React Framework
-- [React 19](https://react.dev/) - UI Library
-- [StyleX](https://stylexjs.com/) - Styling System
-- [MDX](https://mdxjs.com/) - Markdown for Components
-- [TypeScript](https://www.typescriptlang.org/) - Type Safety
+[sunrabbit123](https://github.com/sunrabbit123)
