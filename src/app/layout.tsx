@@ -3,6 +3,7 @@ import * as stylex from "@stylexjs/stylex";
 import { colors } from "../theme/colors.stylex";
 import { fonts } from "../theme/typography.stylex";
 import "./globals.css";
+import "./syntax-highlighting.css";
 
 export const metadata: Metadata = {
   title: "DevBlog",

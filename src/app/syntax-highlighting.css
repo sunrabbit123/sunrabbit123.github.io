@@ -1,0 +1,143 @@
+/**
+ * Syntax highlighting styles for rehype-pretty-code
+ * Using One Dark Pro theme with dark background for maximum contrast and readability
+ * The theme's vibrant, saturated colors provide excellent code visibility
+ */
+
+/* Code block container */
+[data-rehype-pretty-code-fragment] {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Pre element inside code block */
+[data-rehype-pretty-code-fragment] pre {
+  overflow-x: auto;
+  line-height: 1.7;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #4a4a4a; /* Dark gray border that works with theme background */
+  /* Background is provided by the theme (One Dark Pro) via keepBackground: true */
+}
+
+/* Code element styles */
+[data-rehype-pretty-code-fragment] code {
+  display: grid;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+  counter-reset: line;
+}
+
+/* Individual line wrapper */
+[data-rehype-pretty-code-fragment] [data-line] {
+  display: inline-block;
+  width: 100%;
+  padding: 0 1rem;
+  border-left: 2px solid transparent;
+}
+
+/* Highlighted line */
+[data-rehype-pretty-code-fragment] [data-highlighted-line] {
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle light highlight on dark background */
+  border-left-color: #61afef; /* Blue accent that matches One Dark Pro palette */
+}
+
+[data-rehype-pretty-code-fragment] .highlighted {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left-color: #61afef;
+}
+
+/* Line numbers (if enabled) */
+[data-rehype-pretty-code-fragment] [data-line-numbers] {
+  counter-increment: line;
+}
+
+[data-rehype-pretty-code-fragment] [data-line-numbers]::before {
+  content: counter(line);
+  display: inline-block;
+  width: 1rem;
+  margin-right: 1.5rem;
+  text-align: right;
+  color: #5c6370; /* Muted gray that matches One Dark Pro line numbers */
+  opacity: 0.7;
+}
+
+[data-rehype-pretty-code-fragment] [data-line-numbers] > * {
+  margin-left: 0.5rem;
+}
+
+/* Code title/caption (if used) */
+[data-rehype-pretty-code-title] {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  background-color: #21252b; /* Matches One Dark Pro editor background */
+  color: #abb2bf; /* Light gray text from One Dark Pro palette */
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border: 1px solid #4a4a4a;
+  border-bottom: none;
+}
+
+[data-rehype-pretty-code-title] + pre {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* Character highlighting (for inline code highlighting) */
+[data-rehype-pretty-code-fragment] [data-highlighted-chars] {
+  background-color: rgba(97, 175, 239, 0.2); /* Blue accent with opacity */
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 0 0 2px rgba(97, 175, 239, 0.2);
+}
+
+/* Word wrapping for long lines */
+[data-rehype-pretty-code-fragment] pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+
+/* Scrollbar styling for code blocks (webkit browsers) */
+[data-rehype-pretty-code-fragment] pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+[data-rehype-pretty-code-fragment] pre::-webkit-scrollbar-track {
+  background-color: #1e2227; /* Darker variant of One Dark Pro background */
+  border-radius: 0.25rem;
+}
+
+[data-rehype-pretty-code-fragment] pre::-webkit-scrollbar-thumb {
+  background-color: #4b5263; /* Muted gray from One Dark Pro palette */
+  border-radius: 0.25rem;
+}
+
+[data-rehype-pretty-code-fragment] pre::-webkit-scrollbar-thumb:hover {
+  background-color: #5c6370; /* Slightly lighter on hover */
+}
+
+/* Ensure inline code (not in pre) is not affected */
+:not(pre) > code {
+  /* Inline code styling remains controlled by getMDXComponents.tsx */
+}
+
+/* Focus state for accessibility */
+[data-rehype-pretty-code-fragment] pre:focus {
+  outline: 2px solid #61afef; /* Blue accent from One Dark Pro */
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  [data-rehype-pretty-code-fragment] pre {
+    background-color: white !important;
+    border: 1px solid #000;
+  }
+
+  [data-rehype-pretty-code-fragment] [data-highlighted-line] {
+    background-color: #f0f0f0 !important;
+  }
+}

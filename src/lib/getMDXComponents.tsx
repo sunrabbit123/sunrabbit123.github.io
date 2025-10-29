@@ -92,7 +92,7 @@ const styles = stylex.create({
   code: {
     fontFamily: fonts.mono,
     fontSize: fontSizes.sm,
-    backgroundColor: colors.backgroundSecondary,
+    // backgroundColor: colors.backgroundSecondary,
     color: colors.primaryDark,
     padding: '0.2em 0.4em',
     borderRadius: borderRadius.sm,
@@ -101,8 +101,9 @@ const styles = stylex.create({
   pre: {
     fontFamily: fonts.mono,
     fontSize: fontSizes.sm,
+    // Note: Background and text colors are now controlled by Shiki syntax highlighting
+    // These styles serve as fallback for non-highlighted code blocks
     backgroundColor: colors.backgroundTertiary,
-    color: colors.textPrimary,
     padding: spacing.md,
     marginTop: spacing.lg,
     marginBottom: spacing.lg,
@@ -117,6 +118,7 @@ const styles = stylex.create({
     padding: 0,
     borderRadius: 0,
     fontSize: 'inherit',
+    // Allow Shiki to control color
     color: 'inherit',
   },
   ul: {
