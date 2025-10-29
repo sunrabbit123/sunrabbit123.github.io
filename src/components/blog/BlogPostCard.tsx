@@ -17,19 +17,34 @@ const styles = stylex.create({
     backgroundColor: colors.backgroundTertiary,
     borderRadius: borderRadius.lg,
     overflow: 'hidden',
-    boxShadow: `0 2px 8px ${colors.shadowColor}`,
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    boxShadow: `0 1px 4px ${colors.shadowColor}`,
+    transition: 'all 0.2s ease-in-out',
     height: '100%',
     display: 'flex',
-    flexDirection: 'column',
-    ':hover': {
-      transform: 'translateY(-4px)',
-      boxShadow: `0 8px 16px ${colors.shadowColor}`,
+    flexDirection: {
+      default: 'column',
+      '@media (min-width: 640px)': 'row',
     },
+    ':hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: `0 4px 8px ${colors.shadowColor}`,
+    },
+  },
+  imageWrapper: {
+    flexShrink: 0,
+    width: {
+      default: '100%',
+      '@media (min-width: 640px)': '150px',
+    },
+    height: {
+      default: '120px',
+      '@media (min-width: 640px)': '150px',
+    },
+    backgroundColor: colors.secondaryLight,
   },
   image: {
     width: '100%',
-    height: '200px',
+    height: '100%',
     objectFit: 'cover',
     backgroundColor: colors.secondaryLight,
   },
@@ -65,37 +80,6 @@ const styles = stylex.create({
     margin: 0,
     flex: 1,
   },
-  footer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginTop: 'auto',
-  },
-  categories: {
-    display: 'flex',
-    gap: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  category: {
-    fontSize: fontSizes.xs,
-    padding: `${spacing.xs} ${spacing.sm}`,
-    backgroundColor: colors.secondaryDark,
-    color: colors.textPrimary,
-    borderRadius: borderRadius.sm,
-    fontWeight: fontWeights.medium,
-  },
-  tags: {
-    display: 'flex',
-    gap: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  tag: {
-    fontSize: fontSizes.xs,
-    color: colors.accent,
-    fontWeight: fontWeights.medium,
-  },
 });
 
 interface BlogPostCardProps {
@@ -122,14 +106,16 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
         {...stylex.props(styles.card)}
         aria-label={`Read article: ${post.title}`}
       >
-      <img
-        src={post.featuredImage}
-        alt={`Featured image for ${post.title}`}
-        loading="lazy"
-        decoding="async"
-        onError={handleImageError}
-        {...stylex.props(styles.image)}
-      />
+      <div {...stylex.props(styles.imageWrapper)}>
+        <img
+          src={post.featuredImage}
+          alt={`Featured image for ${post.title}`}
+          loading="lazy"
+          decoding="async"
+          onError={handleImageError}
+          {...stylex.props(styles.image)}
+        />
+      </div>
       <div {...stylex.props(styles.content)}>
         <h2 {...stylex.props(styles.title)}>{post.title}</h2>
 
@@ -138,23 +124,6 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
         </div>
 
         <p {...stylex.props(styles.excerpt)}>{post.excerpt}</p>
-
-        <div {...stylex.props(styles.footer)}>
-          <div {...stylex.props(styles.categories)}>
-            {post.categories.slice(0, 2).map(category => (
-              <span key={category} {...stylex.props(styles.category)}>
-                {category}
-              </span>
-            ))}
-          </div>
-          <div {...stylex.props(styles.tags)}>
-            {post.tags.slice(0, 3).map(tag => (
-              <span key={tag} {...stylex.props(styles.tag)}>
-                #{tag}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
       </article>
     </Link>
