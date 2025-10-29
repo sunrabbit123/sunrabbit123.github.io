@@ -46,17 +46,31 @@ export function ensurePostsDirectoryExists(): boolean {
 
 /**
  * Get all MDX file paths from the content/posts directory
+ * @param locale - The locale to fetch files for (default: 'ko')
  * @returns Array of absolute file paths
  */
-export function getAllMDXFiles(): string[] {
+export function getAllMDXFiles(locale: string = 'ko'): string[] {
   if (!ensurePostsDirectoryExists()) {
     return [];
   }
 
   try {
     const files = fs.readdirSync(POSTS_DIRECTORY);
+
+    // For Korean (ko), use .mdx files
+    // For English (en), use .en.mdx files
+    const extension = locale === 'ko' ? '.mdx' : `.${locale}.mdx`;
+
     return files
-      .filter((file) => file.endsWith('.mdx'))
+      .filter((file) => {
+        if (locale === 'ko') {
+          // Korean: match .mdx files but exclude locale-specific ones (e.g., .en.mdx)
+          return file.endsWith('.mdx') && !file.match(/\.[a-z]{2}\.mdx$/);
+        } else {
+          // Other locales: match locale-specific files (e.g., .en.mdx)
+          return file.endsWith(extension);
+        }
+      })
       .map((file) => path.join(POSTS_DIRECTORY, file));
   } catch (error) {
     console.error('Error reading MDX files:', error);
@@ -93,10 +107,11 @@ export function parseMDXFrontmatter(filePath: string): ParsedMDX | null {
 /**
  * Get an MDX file by its slug
  * @param slug - The post slug
+ * @param locale - The locale to fetch the file for (default: 'ko')
  * @returns Parsed MDX data or null if not found
  */
-export function getMDXBySlug(slug: string): ParsedMDX | null {
-  const files = getAllMDXFiles();
+export function getMDXBySlug(slug: string, locale: string = 'ko'): ParsedMDX | null {
+  const files = getAllMDXFiles(locale);
 
   for (const filePath of files) {
     const parsed = parseMDXFrontmatter(filePath);
@@ -161,10 +176,11 @@ export function calculateReadTime(content: string): number {
 
 /**
  * Get all blog posts from MDX files
+ * @param locale - The locale to fetch posts for (default: 'ko')
  * @returns Array of BlogPost objects
  */
-export function getAllBlogPosts(): BlogPost[] {
-  const files = getAllMDXFiles();
+export function getAllBlogPosts(locale: string = 'ko'): BlogPost[] {
+  const files = getAllMDXFiles(locale);
   const posts: BlogPost[] = [];
 
   for (const filePath of files) {
@@ -187,10 +203,11 @@ export function getAllBlogPosts(): BlogPost[] {
 /**
  * Get a single blog post by slug
  * @param slug - The post slug
+ * @param locale - The locale to fetch the post for (default: 'ko')
  * @returns BlogPost object or null if not found
  */
-export function getBlogPostBySlug(slug: string): BlogPost | null {
-  const parsed = getMDXBySlug(slug);
+export function getBlogPostBySlug(slug: string, locale: string = 'ko'): BlogPost | null {
+  const parsed = getMDXBySlug(slug, locale);
   if (!parsed) {
     return null;
   }
@@ -200,10 +217,11 @@ export function getBlogPostBySlug(slug: string): BlogPost | null {
 
 /**
  * Get all unique categories from all posts
+ * @param locale - The locale to fetch categories for (default: 'ko')
  * @returns Array of unique category names
  */
-export function getAllCategories(): string[] {
-  const posts = getAllBlogPosts();
+export function getAllCategories(locale: string = 'ko'): string[] {
+  const posts = getAllBlogPosts(locale);
   const categories = new Set<string>();
 
   posts.forEach((post) => {
@@ -215,10 +233,11 @@ export function getAllCategories(): string[] {
 
 /**
  * Get all unique tags from all posts
+ * @param locale - The locale to fetch tags for (default: 'ko')
  * @returns Array of unique tag names
  */
-export function getAllTags(): string[] {
-  const posts = getAllBlogPosts();
+export function getAllTags(locale: string = 'ko'): string[] {
+  const posts = getAllBlogPosts(locale);
   const tags = new Set<string>();
 
   posts.forEach((post) => {
@@ -231,10 +250,11 @@ export function getAllTags(): string[] {
 /**
  * Get posts filtered by category
  * @param category - The category name
+ * @param locale - The locale to fetch posts for (default: 'ko')
  * @returns Array of BlogPost objects
  */
-export function getPostsByCategory(category: string): BlogPost[] {
-  const posts = getAllBlogPosts();
+export function getPostsByCategory(category: string, locale: string = 'ko'): BlogPost[] {
+  const posts = getAllBlogPosts(locale);
   return posts.filter((post) =>
     post.categories.some((cat) => cat.toLowerCase() === category.toLowerCase())
   );
@@ -243,10 +263,11 @@ export function getPostsByCategory(category: string): BlogPost[] {
 /**
  * Get posts filtered by tag
  * @param tag - The tag name
+ * @param locale - The locale to fetch posts for (default: 'ko')
  * @returns Array of BlogPost objects
  */
-export function getPostsByTag(tag: string): BlogPost[] {
-  const posts = getAllBlogPosts();
+export function getPostsByTag(tag: string, locale: string = 'ko'): BlogPost[] {
+  const posts = getAllBlogPosts(locale);
   return posts.filter((post) =>
     post.tags.some((t) => t.toLowerCase() === tag.toLowerCase())
   );

@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "home": "Home",
+    "blog": "Blog"
+  },
+  "blog": {
+    "readMore": "Read more",
+    "publishedOn": "Published on",
+    "readTime": "{minutes} min read",
+    "minRead": "min read",
+    "backToBlog": "Back to Blog",
+    "categories": "Categories",
+    "tags": "Tags"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred"
+  }
+}
