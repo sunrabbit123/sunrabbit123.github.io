@@ -2,15 +2,18 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import * as stylex from '@stylexjs/stylex';
-import { blogService } from '../../../services/blogService';
-import { getMDXComponents } from '../../../lib/getMDXComponents';
-import { colors } from '../../../theme/colors.stylex';
-import { fonts, fontSizes, fontWeights, lineHeights } from '../../../theme/typography.stylex';
-import { spacing, borderRadius } from '../../../theme/spacing.stylex';
+import { useTranslations } from 'next-intl';
+import { setRequestLocale } from 'next-intl/server';
+import { blogService } from '../../../../services/blogService';
+import { getMDXComponents } from '../../../../lib/getMDXComponents';
+import { colors } from '../../../../theme/colors.stylex';
+import { fonts, fontSizes, fontWeights, lineHeights } from '../../../../theme/typography.stylex';
+import { spacing, borderRadius } from '../../../../theme/spacing.stylex';
+import { routing } from '@/i18n/routing';
 import type { Metadata } from 'next';
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }
 
 const styles = stylex.create({
@@ -165,11 +168,21 @@ const styles = stylex.create({
  * This enables static site generation for all post pages
  */
 export async function generateStaticParams() {
-  const posts = await blogService.getAllPosts();
+  // Generate params for all locales and posts
+  const params = [];
 
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+  for (const locale of routing.locales) {
+    const posts = await blogService.getAllPosts(locale);
+
+    for (const post of posts) {
+      params.push({
+        locale,
+        slug: post.slug,
+      });
+    }
+  }
+
+  return params;
 }
 
 /**
@@ -177,8 +190,8 @@ export async function generateStaticParams() {
  * Includes Open Graph tags for social media sharing
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const post = await blogService.getPostBySlug(slug);
+  const { locale, slug } = await params;
+  const post = await blogService.getPostBySlug(slug, locale);
 
   if (!post) {
     return {
@@ -218,17 +231,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  */
 export default async function BlogPostPage({ params }: PageProps) {
   // Await params as required by Next.js 15
-  const { slug } = await params;
+  const { locale, slug } = await params;
+
+  // Enable static rendering
+  setRequestLocale(locale);
 
   // Fetch post data
-  const post = await blogService.getPostBySlug(slug);
+  const post = await blogService.getPostBySlug(slug, locale);
 
   // Handle 404 case
   if (!post) {
     notFound();
   }
 
-  const formattedDate = post.publishedDate.toLocaleDateString('en-US', {
+  const formattedDate = post.publishedDate.toLocaleDateString(locale === 'ko' ? 'ko-KR' : 'en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -236,9 +252,9 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <div {...stylex.props(styles.container)}>
-      <Link href="/" {...stylex.props(styles.backLink)}>
+      <Link href={`/${locale}`} {...stylex.props(styles.backLink)}>
         <span {...stylex.props(styles.backArrow)}>←</span>
-        Back to Blog
+        {locale === 'ko' ? '블로그로 돌아가기' : 'Back to Blog'}
       </Link>
 
       <article {...stylex.props(styles.article)}>
@@ -263,7 +279,9 @@ export default async function BlogPostPage({ params }: PageProps) {
                 <span {...stylex.props(styles.date)}>{formattedDate}</span>
               </div>
             </div>
-            <span {...stylex.props(styles.readTime)}>{post.readTime} min read</span>
+            <span {...stylex.props(styles.readTime)}>
+              {post.readTime} {locale === 'ko' ? '분 읽기' : 'min read'}
+            </span>
             {post.categories.length > 0 && (
               <div {...stylex.props(styles.categories)}>
                 {post.categories.map(category => (

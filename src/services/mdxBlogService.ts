@@ -16,55 +16,61 @@ import {
 export class MDXBlogService implements BlogService {
   /**
    * Get all blog posts
+   * @param locale - The locale to fetch posts for (default: 'ko')
    * @returns Promise<BlogPost[]> - All posts sorted by date (newest first)
    */
-  async getAllPosts(): Promise<BlogPost[]> {
-    return getAllBlogPosts();
+  async getAllPosts(locale: string = 'ko'): Promise<BlogPost[]> {
+    return getAllBlogPosts(locale);
   }
 
   /**
    * Get a single post by ID
    * @param id - The post ID (same as slug in MDX implementation)
+   * @param locale - The locale to fetch the post for (default: 'ko')
    * @returns Promise<BlogPost | null> - The post or null if not found
    */
-  async getPostById(id: string): Promise<BlogPost | null> {
+  async getPostById(id: string, locale: string = 'ko'): Promise<BlogPost | null> {
     // In MDX implementation, ID is the same as slug
-    return getBlogPostBySlug(id);
+    return getBlogPostBySlug(id, locale);
   }
 
   /**
    * Get a single post by slug
    * @param slug - The post slug
+   * @param locale - The locale to fetch the post for (default: 'ko')
    * @returns Promise<BlogPost | null> - The post or null if not found
    */
-  async getPostBySlug(slug: string): Promise<BlogPost | null> {
-    return getBlogPostBySlug(slug);
+  async getPostBySlug(slug: string, locale: string = 'ko'): Promise<BlogPost | null> {
+    return getBlogPostBySlug(slug, locale);
   }
 
   /**
    * Get posts by category
    * @param category - The category name
+   * @param locale - The locale to fetch posts for (default: 'ko')
    * @returns Promise<BlogPost[]> - Posts in the category
    */
-  async getPostsByCategory(category: string): Promise<BlogPost[]> {
-    return getMDXPostsByCategory(category);
+  async getPostsByCategory(category: string, locale: string = 'ko'): Promise<BlogPost[]> {
+    return getMDXPostsByCategory(category, locale);
   }
 
   /**
    * Get posts by tag
    * @param tag - The tag name
+   * @param locale - The locale to fetch posts for (default: 'ko')
    * @returns Promise<BlogPost[]> - Posts with the tag
    */
-  async getPostsByTag(tag: string): Promise<BlogPost[]> {
-    return getMDXPostsByTag(tag);
+  async getPostsByTag(tag: string, locale: string = 'ko'): Promise<BlogPost[]> {
+    return getMDXPostsByTag(tag, locale);
   }
 
   /**
    * Get all categories
+   * @param locale - The locale to fetch categories for (default: 'ko')
    * @returns Promise<Category[]> - All unique categories with metadata
    */
-  async getCategories(): Promise<Category[]> {
-    const categoryNames = getMDXCategories();
+  async getCategories(locale: string = 'ko'): Promise<Category[]> {
+    const categoryNames = getMDXCategories(locale);
 
     // Transform category names to Category objects
     return categoryNames.map((name) => {
@@ -80,10 +86,11 @@ export class MDXBlogService implements BlogService {
 
   /**
    * Get all unique tags
+   * @param locale - The locale to fetch tags for (default: 'ko')
    * @returns Promise<string[]> - All unique tags
    */
-  async getTags(): Promise<string[]> {
-    return getMDXTags();
+  async getTags(locale: string = 'ko'): Promise<string[]> {
+    return getMDXTags(locale);
   }
 
   /**

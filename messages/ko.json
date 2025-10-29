@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "home": "홈",
+    "blog": "블로그"
+  },
+  "blog": {
+    "readMore": "더 읽기",
+    "publishedOn": "게시일",
+    "readTime": "{minutes}분 읽기",
+    "minRead": "분 읽기",
+    "backToBlog": "블로그로 돌아가기",
+    "categories": "카테고리",
+    "tags": "태그"
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다"
+  }
+}
