@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import rehypePrettyCode from 'rehype-pretty-code';
+import remarkGfm from 'remark-gfm';
 import * as stylex from '@stylexjs/stylex';
 import { blogService } from '../../../services/blogService';
 import { getMDXComponents } from '../../../lib/getMDXComponents';
@@ -12,6 +14,29 @@ import type { Metadata } from 'next';
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
+
+/**
+ * Configuration for rehype-pretty-code syntax highlighting
+ * Using catppuccin-mocha theme for warm brown tones that complement the site's Mocha Mousse palette
+ */
+const rehypePrettyCodeOptions = {
+  theme: "catppuccin-mocha", // Warm mocha-inspired theme matching site's brown palette
+  keepBackground: false, // Use site's cream background (#FFF8F0) instead of theme background
+  defaultLang: "plaintext",
+  onVisitLine(node: any) {
+    // Prevent empty lines from collapsing
+    if (node.children.length === 0) {
+      node.children = [{ type: "text", value: " " }];
+    }
+  },
+  onVisitHighlightedLine(node: any) {
+    // Add class for highlighted lines
+    if (!node.properties.className) {
+      node.properties.className = [];
+    }
+    node.properties.className.push("highlighted");
+  },
+};
 
 const styles = stylex.create({
   container: {
@@ -278,7 +303,16 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         <div {...stylex.props(styles.body)}>
           <div {...stylex.props(styles.mdxContent)}>
-            <MDXRemote source={post.content} components={getMDXComponents()} />
+            <MDXRemote
+              source={post.content}
+              components={getMDXComponents()}
+              options={{
+                mdxOptions: {
+                  remarkPlugins: [remarkGfm],
+                  rehypePlugins: [[rehypePrettyCode, rehypePrettyCodeOptions]],
+                },
+              }}
+            />
           </div>
         </div>
 
