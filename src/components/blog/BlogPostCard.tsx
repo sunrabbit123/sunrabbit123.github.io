@@ -80,23 +80,6 @@ const styles = stylex.create({
     margin: 0,
     flex: 1,
   },
-  footer: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginTop: 'auto',
-  },
-  tags: {
-    display: 'flex',
-    gap: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  tag: {
-    fontSize: fontSizes.xs,
-    color: colors.textTertiary,
-    fontWeight: fontWeights.normal,
-  },
 });
 
 interface BlogPostCardProps {
@@ -141,16 +124,6 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
         </div>
 
         <p {...stylex.props(styles.excerpt)}>{post.excerpt}</p>
-
-        <div {...stylex.props(styles.footer)}>
-          <div {...stylex.props(styles.tags)}>
-            {post.tags.slice(0, 3).map(tag => (
-              <span key={tag} {...stylex.props(styles.tag)}>
-                #{tag}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
       </article>
     </Link>
