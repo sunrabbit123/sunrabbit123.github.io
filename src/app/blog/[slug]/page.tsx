@@ -17,10 +17,11 @@ interface PageProps {
 
 /**
  * Configuration for rehype-pretty-code syntax highlighting
- * Using catppuccin-mocha theme for warm brown tones that complement the site's Mocha Mousse palette
+ * Using One Dark Pro theme for better contrast and readability on the cream background
+ * Changed from catppuccin-mocha due to colors being too pale/light
  */
 const rehypePrettyCodeOptions = {
-  theme: "catppuccin-mocha", // Warm mocha-inspired theme matching site's brown palette
+  theme: "one-dark-pro", // High contrast theme with vibrant colors for better readability
   keepBackground: false, // Use site's cream background (#FFF8F0) instead of theme background
   defaultLang: "plaintext",
   onVisitLine(node: any) {
