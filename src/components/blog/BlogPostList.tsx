@@ -14,8 +14,6 @@ const styles = stylex.create({
     display: 'grid',
     gridTemplateColumns: {
       default: '1fr',
-      '@media (min-width: 640px)': 'repeat(2, 1fr)',
-      '@media (min-width: 1024px)': 'repeat(3, 1fr)',
     },
     gap: spacing.xl,
   },

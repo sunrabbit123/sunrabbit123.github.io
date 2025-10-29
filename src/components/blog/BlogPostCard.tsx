@@ -17,19 +17,34 @@ const styles = stylex.create({
     backgroundColor: colors.backgroundTertiary,
     borderRadius: borderRadius.lg,
     overflow: 'hidden',
-    boxShadow: `0 2px 8px ${colors.shadowColor}`,
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    boxShadow: `0 1px 4px ${colors.shadowColor}`,
+    transition: 'all 0.2s ease-in-out',
     height: '100%',
     display: 'flex',
-    flexDirection: 'column',
-    ':hover': {
-      transform: 'translateY(-4px)',
-      boxShadow: `0 8px 16px ${colors.shadowColor}`,
+    flexDirection: {
+      default: 'column',
+      '@media (min-width: 640px)': 'row',
     },
+    ':hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: `0 4px 8px ${colors.shadowColor}`,
+    },
+  },
+  imageWrapper: {
+    flexShrink: 0,
+    width: {
+      default: '100%',
+      '@media (min-width: 640px)': '150px',
+    },
+    height: {
+      default: '120px',
+      '@media (min-width: 640px)': '150px',
+    },
+    backgroundColor: colors.secondaryLight,
   },
   image: {
     width: '100%',
-    height: '200px',
+    height: '100%',
     objectFit: 'cover',
     backgroundColor: colors.secondaryLight,
   },
@@ -80,11 +95,16 @@ const styles = stylex.create({
   },
   category: {
     fontSize: fontSizes.xs,
-    padding: `${spacing.xs} ${spacing.sm}`,
-    backgroundColor: colors.secondaryDark,
-    color: colors.textPrimary,
-    borderRadius: borderRadius.sm,
+    color: colors.textSecondary,
     fontWeight: fontWeights.medium,
+    borderRight: `1px solid ${colors.textTertiary}`,
+    paddingRight: spacing.sm,
+    marginRight: spacing.sm,
+    ':last-child': {
+      borderRight: 'none',
+      paddingRight: 0,
+      marginRight: 0,
+    },
   },
   tags: {
     display: 'flex',
@@ -93,8 +113,8 @@ const styles = stylex.create({
   },
   tag: {
     fontSize: fontSizes.xs,
-    color: colors.accent,
-    fontWeight: fontWeights.medium,
+    color: colors.textTertiary,
+    fontWeight: fontWeights.normal,
   },
 });
 
@@ -122,14 +142,16 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
         {...stylex.props(styles.card)}
         aria-label={`Read article: ${post.title}`}
       >
-      <img
-        src={post.featuredImage}
-        alt={`Featured image for ${post.title}`}
-        loading="lazy"
-        decoding="async"
-        onError={handleImageError}
-        {...stylex.props(styles.image)}
-      />
+      <div {...stylex.props(styles.imageWrapper)}>
+        <img
+          src={post.featuredImage}
+          alt={`Featured image for ${post.title}`}
+          loading="lazy"
+          decoding="async"
+          onError={handleImageError}
+          {...stylex.props(styles.image)}
+        />
+      </div>
       <div {...stylex.props(styles.content)}>
         <h2 {...stylex.props(styles.title)}>{post.title}</h2>
 
