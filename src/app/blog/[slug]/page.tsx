@@ -9,35 +9,12 @@ import { getMDXComponents } from '../../../lib/getMDXComponents';
 import { colors } from '../../../theme/colors.stylex';
 import { fonts, fontSizes, fontWeights, lineHeights } from '../../../theme/typography.stylex';
 import { spacing, borderRadius } from '../../../theme/spacing.stylex';
+import { rehypePrettyCodeOptions } from '../../../config/rehypePrettyCode';
 import type { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
-
-/**
- * Configuration for rehype-pretty-code syntax highlighting
- * Using GitHub Dark theme for high contrast and readability on the cream background
- * Changed from one-dark-pro to increase color contrast (colors were too pale)
- */
-const rehypePrettyCodeOptions = {
-  theme: "github-dark", // High contrast dark theme with vibrant, readable colors
-  keepBackground: false, // Use site's cream background (#FFF8F0) instead of theme background
-  defaultLang: "plaintext",
-  onVisitLine(node: any) {
-    // Prevent empty lines from collapsing
-    if (node.children.length === 0) {
-      node.children = [{ type: "text", value: " " }];
-    }
-  },
-  onVisitHighlightedLine(node: any) {
-    // Add class for highlighted lines
-    if (!node.properties.className) {
-      node.properties.className = [];
-    }
-    node.properties.className.push("highlighted");
-  },
-};
 
 const styles = stylex.create({
   container: {

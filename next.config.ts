@@ -5,6 +5,7 @@ import createMDX from "@next/mdx";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
+import { rehypePrettyCodeOptions } from "./src/config/rehypePrettyCode";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,30 +17,6 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
-};
-
-/**
- * Configuration for rehype-pretty-code syntax highlighting
- * Using GitHub Dark theme for high contrast and readability on the cream background
- * Changed from one-dark-pro to increase color contrast (colors were too pale)
- */
-const rehypePrettyCodeOptions = {
-  theme: "github-dark", // High contrast dark theme with vibrant, readable colors
-  keepBackground: false, // Use site's cream background (#FFF8F0) instead of theme background
-  defaultLang: "plaintext",
-  onVisitLine(node: any) {
-    // Prevent empty lines from collapsing
-    if (node.children.length === 0) {
-      node.children = [{ type: "text", value: " " }];
-    }
-  },
-  onVisitHighlightedLine(node: any) {
-    // Add class for highlighted lines
-    if (!node.properties.className) {
-      node.properties.className = [];
-    }
-    node.properties.className.push("highlighted");
-  },
 };
 
 const withMDX = createMDX({
