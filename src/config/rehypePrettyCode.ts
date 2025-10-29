@@ -14,7 +14,7 @@ import type { Element } from "hast";
 export const rehypePrettyCodeOptions: Options = {
   // Using one-dark-pro for vibrant, high-contrast syntax highlighting
   // This theme has strong, saturated colors perfect for code readability
-  theme: "one-dark-pro",
+  theme: "github-light-high-contrast",
 
   // Keep the theme's dark background for maximum contrast
   keepBackground: true,

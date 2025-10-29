@@ -92,7 +92,7 @@ const styles = stylex.create({
   code: {
     fontFamily: fonts.mono,
     fontSize: fontSizes.sm,
-    backgroundColor: colors.backgroundSecondary,
+    // backgroundColor: colors.backgroundSecondary,
     color: colors.primaryDark,
     padding: '0.2em 0.4em',
     borderRadius: borderRadius.sm,

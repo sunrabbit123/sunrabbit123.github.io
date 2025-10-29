@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
+import remarkFrontmatter from "remark-frontmatter";
 import * as stylex from '@stylexjs/stylex';
 import { blogService } from '../../../services/blogService';
 import { getMDXComponents } from '../../../lib/getMDXComponents';
@@ -114,19 +115,6 @@ const styles = stylex.create({
     color: colors.textTertiary,
     fontWeight: fontWeights.medium,
   },
-  categories: {
-    display: 'flex',
-    gap: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  category: {
-    fontSize: fontSizes.sm,
-    padding: `${spacing.sm} ${spacing.md}`,
-    backgroundColor: colors.secondaryDark,
-    color: colors.textPrimary,
-    borderRadius: borderRadius.md,
-    fontWeight: fontWeights.medium,
-  },
   body: {
     padding: {
       default: spacing.lg,
@@ -147,19 +135,6 @@ const styles = stylex.create({
     borderTopWidth: '1px',
     borderTopStyle: 'solid',
     borderTopColor: colors.borderLight,
-  },
-  tags: {
-    display: 'flex',
-    gap: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  tag: {
-    fontSize: fontSizes.sm,
-    padding: `${spacing.sm} ${spacing.md}`,
-    backgroundColor: colors.secondaryLight,
-    color: colors.textPrimary,
-    borderRadius: borderRadius.md,
-    fontWeight: fontWeights.medium,
   },
 });
 
@@ -267,15 +242,6 @@ export default async function BlogPostPage({ params }: PageProps) {
               </div>
             </div>
             <span {...stylex.props(styles.readTime)}>{post.readTime} min read</span>
-            {post.categories.length > 0 && (
-              <div {...stylex.props(styles.categories)}>
-                {post.categories.map(category => (
-                  <span key={category} {...stylex.props(styles.category)}>
-                    {category}
-                  </span>
-                ))}
-              </div>
-            )}
           </div>
         </div>
 
@@ -286,25 +252,13 @@ export default async function BlogPostPage({ params }: PageProps) {
               components={getMDXComponents()}
               options={{
                 mdxOptions: {
-                  remarkPlugins: [remarkGfm],
+                  remarkPlugins: [remarkGfm, remarkFrontmatter],
                   rehypePlugins: [[rehypePrettyCode, rehypePrettyCodeOptions]],
                 },
               }}
             />
           </div>
         </div>
-
-        {post.tags.length > 0 && (
-          <div {...stylex.props(styles.footer)}>
-            <div {...stylex.props(styles.tags)}>
-              {post.tags.map(tag => (
-                <span key={tag} {...stylex.props(styles.tag)}>
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
       </article>
     </div>
   );
