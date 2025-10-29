@@ -7,17 +7,17 @@ import type { Element } from "hast";
  * - next.config.ts (for @next/mdx static files)
  * - src/app/blog/[slug]/page.tsx (for next-mdx-remote runtime rendering)
  *
- * Using GitHub Dark Dimmed theme for better contrast on cream background
- * This theme provides vibrant colors that stand out well against the site's
- * warm #FFF8F0 background, addressing readability concerns.
+ * Using One Dark Pro theme with dark background for maximum contrast
+ * This theme provides vibrant, highly saturated colors that stand out
+ * well against the dark background, addressing readability concerns.
  */
 export const rehypePrettyCodeOptions: Options = {
-  // Using github-dark-dimmed for better contrast than github-dark
-  // The slightly muted colors work better with our cream background
-  theme: "github-dark-dimmed",
+  // Using one-dark-pro for vibrant, high-contrast syntax highlighting
+  // This theme has strong, saturated colors perfect for code readability
+  theme: "one-dark-pro",
 
-  // Use site's cream background (#FFF8F0) instead of theme background
-  keepBackground: false,
+  // Keep the theme's dark background for maximum contrast
+  keepBackground: true,
 
   // Default language for code blocks without language specification
   defaultLang: "plaintext",

@@ -1,6 +1,7 @@
 /**
  * Syntax highlighting styles for rehype-pretty-code
- * Designed to complement the warm "Mocha Mousse" brown color palette
+ * Using One Dark Pro theme with dark background for maximum contrast and readability
+ * The theme's vibrant, saturated colors provide excellent code visibility
  */
 
 /* Code block container */
@@ -15,8 +16,8 @@
   line-height: 1.7;
   padding: 1rem;
   border-radius: 0.5rem;
-  border: 1px solid #B8956A; /* Medium brown border for good contrast */
-  background-color: #2D2A27; /* Dark background for maximum code color contrast */
+  border: 1px solid #4a4a4a; /* Dark gray border that works with theme background */
+  /* Background is provided by the theme (One Dark Pro) via keepBackground: true */
 }
 
 /* Code element styles */
@@ -37,13 +38,13 @@
 
 /* Highlighted line */
 [data-rehype-pretty-code-fragment] [data-highlighted-line] {
-  background-color: rgba(184, 149, 106, 0.15); /* Warm brown tint that works on dark background */
-  border-left-color: #C1664F; /* Accent color from theme */
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle light highlight on dark background */
+  border-left-color: #61afef; /* Blue accent that matches One Dark Pro palette */
 }
 
 [data-rehype-pretty-code-fragment] .highlighted {
-  background-color: rgba(184, 149, 106, 0.15);
-  border-left-color: #C1664F;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left-color: #61afef;
 }
 
 /* Line numbers (if enabled) */
@@ -57,8 +58,8 @@
   width: 1rem;
   margin-right: 1.5rem;
   text-align: right;
-  color: #B8956A; /* Light color visible on dark background */
-  opacity: 0.5;
+  color: #5c6370; /* Muted gray that matches One Dark Pro line numbers */
+  opacity: 0.7;
 }
 
 [data-rehype-pretty-code-fragment] [data-line-numbers] > * {
@@ -71,11 +72,11 @@
   font-size: 0.875rem;
   font-weight: 600;
   padding: 0.75rem 1rem;
-  background-color: #3E2723; /* Slightly lighter than code block background */
-  color: #FAF4ED; /* Light text on dark background */
+  background-color: #21252b; /* Matches One Dark Pro editor background */
+  color: #abb2bf; /* Light gray text from One Dark Pro palette */
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
-  border: 1px solid #B8956A;
+  border: 1px solid #4a4a4a;
   border-bottom: none;
 }
 
@@ -87,10 +88,10 @@
 
 /* Character highlighting (for inline code highlighting) */
 [data-rehype-pretty-code-fragment] [data-highlighted-chars] {
-  background-color: rgba(193, 102, 79, 0.15); /* accent with opacity */
+  background-color: rgba(97, 175, 239, 0.2); /* Blue accent with opacity */
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
-  box-shadow: 0 0 0 2px rgba(193, 102, 79, 0.15);
+  box-shadow: 0 0 0 2px rgba(97, 175, 239, 0.2);
 }
 
 /* Word wrapping for long lines */
@@ -105,17 +106,17 @@
 }
 
 [data-rehype-pretty-code-fragment] pre::-webkit-scrollbar-track {
-  background-color: #1A1816; /* Darker background for scrollbar track */
+  background-color: #1e2227; /* Darker variant of One Dark Pro background */
   border-radius: 0.25rem;
 }
 
 [data-rehype-pretty-code-fragment] pre::-webkit-scrollbar-thumb {
-  background-color: #6F4E37; /* Medium brown for scrollbar thumb */
+  background-color: #4b5263; /* Muted gray from One Dark Pro palette */
   border-radius: 0.25rem;
 }
 
 [data-rehype-pretty-code-fragment] pre::-webkit-scrollbar-thumb:hover {
-  background-color: #B8956A; /* Lighter on hover */
+  background-color: #5c6370; /* Slightly lighter on hover */
 }
 
 /* Ensure inline code (not in pre) is not affected */
@@ -125,7 +126,7 @@
 
 /* Focus state for accessibility */
 [data-rehype-pretty-code-fragment] pre:focus {
-  outline: 2px solid #C1664F; /* accent */
+  outline: 2px solid #61afef; /* Blue accent from One Dark Pro */
   outline-offset: 2px;
 }
 
