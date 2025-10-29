@@ -15,8 +15,8 @@
   line-height: 1.7;
   padding: 1rem;
   border-radius: 0.5rem;
-  border: 1px solid #E8DCC8; /* borderLight from theme */
-  background-color: #F5E6D3; /* backgroundTertiary from theme */
+  border: 1px solid #D4C5B0; /* Darker border for better contrast */
+  background-color: #EAD9C4; /* Slightly darker background for better contrast with code colors */
 }
 
 /* Code element styles */
@@ -37,13 +37,13 @@
 
 /* Highlighted line */
 [data-rehype-pretty-code-fragment] [data-highlighted-line] {
-  background-color: rgba(111, 78, 55, 0.08); /* Warm brown tint (primary color with opacity) */
-  border-left-color: #C1664F; /* accent color */
+  background-color: rgba(111, 78, 55, 0.12); /* Stronger warm brown tint for better visibility */
+  border-left-color: #B35940; /* Darker accent color for better contrast */
 }
 
 [data-rehype-pretty-code-fragment] .highlighted {
-  background-color: rgba(111, 78, 55, 0.08);
-  border-left-color: #C1664F;
+  background-color: rgba(111, 78, 55, 0.12);
+  border-left-color: #B35940;
 }
 
 /* Line numbers (if enabled) */

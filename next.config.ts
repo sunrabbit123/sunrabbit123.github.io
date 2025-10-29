@@ -20,11 +20,11 @@ const nextConfig: NextConfig = {
 
 /**
  * Configuration for rehype-pretty-code syntax highlighting
- * Using One Dark Pro theme for better contrast and readability on the cream background
- * Changed from catppuccin-mocha due to colors being too pale/light
+ * Using GitHub Dark theme for high contrast and readability on the cream background
+ * Changed from one-dark-pro to increase color contrast (colors were too pale)
  */
 const rehypePrettyCodeOptions = {
-  theme: "one-dark-pro", // High contrast theme with vibrant colors for better readability
+  theme: "github-dark", // High contrast dark theme with vibrant, readable colors
   keepBackground: false, // Use site's cream background (#FFF8F0) instead of theme background
   defaultLang: "plaintext",
   onVisitLine(node: any) {
