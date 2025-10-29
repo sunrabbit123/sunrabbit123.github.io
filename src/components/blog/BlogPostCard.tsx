@@ -82,31 +82,10 @@ const styles = stylex.create({
   },
   footer: {
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: spacing.sm,
     marginTop: 'auto',
-  },
-  categories: {
-    display: 'flex',
-    gap: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  category: {
-    fontSize: fontSizes.xs,
-    color: colors.textSecondary,
-    fontWeight: fontWeights.medium,
-    borderRightWidth: '1px',
-    borderRightStyle: 'solid',
-    borderRightColor: colors.textTertiary,
-    paddingRight: spacing.sm,
-    marginRight: spacing.sm,
-    ':last-child': {
-      borderRightWidth: 0,
-      paddingRight: 0,
-      marginRight: 0,
-    },
   },
   tags: {
     display: 'flex',
@@ -164,13 +143,6 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
         <p {...stylex.props(styles.excerpt)}>{post.excerpt}</p>
 
         <div {...stylex.props(styles.footer)}>
-          <div {...stylex.props(styles.categories)}>
-            {post.categories.slice(0, 2).map(category => (
-              <span key={category} {...stylex.props(styles.category)}>
-                {category}
-              </span>
-            ))}
-          </div>
           <div {...stylex.props(styles.tags)}>
             {post.tags.slice(0, 3).map(tag => (
               <span key={tag} {...stylex.props(styles.tag)}>
