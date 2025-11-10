@@ -49,7 +49,6 @@ jobs:
       - name: Translate MDX files
         if: steps.changed-files.outputs.any_changed == 'true'
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           # Make script executable

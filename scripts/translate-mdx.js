@@ -5,74 +5,182 @@ const path = require('path');
 const matter = require('gray-matter');
 
 /**
- * Translate MDX content using Anthropic Claude API
- * @param {string} content - The content to translate
- * @param {string} apiKey - The API key for authentication
- * @returns {Promise<string>} The translated content
+ * Parse the structured JSON response from OpenAI
+ * @param {string} responseText - The response text from OpenAI API
+ * @returns {object} Parsed translation result with content and frontmatter
  */
-async function translateWithClaude(content, apiKey) {
-  const systemPrompt = `You are a professional technical translator specializing in software engineering content.
-Translate the following Korean blog post content to English while:
-1. Preserving all markdown formatting exactly (##, -, *, \`, etc.)
-2. Keeping code blocks, URLs, and image paths unchanged
-3. Using natural, professional English suitable for a tech blog
-4. Translating technical terms consistently
-5. Maintaining the original structure and formatting
-
-IMPORTANT: Return ONLY the translated content without any additional explanation or markdown code fences.`;
-
-  const userPrompt = `Translate this Korean text to English:\n\n${content}`;
-
+function parseTranslationResponse(responseText) {
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 8000,
-        system: systemPrompt,
-        messages: [
-          {
-            role: 'user',
-            content: userPrompt
-          }
-        ]
-      })
-    });
+    // Try to parse as JSON first
+    const parsed = JSON.parse(responseText);
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Claude API error: ${response.status} - ${JSON.stringify(errorData)}`);
+    // Validate the expected structure
+    if (!parsed.translatedContent) {
+      throw new Error('Response missing translatedContent field');
     }
 
-    const data = await response.json();
-    return data.content[0].text.trim();
+    return {
+      content: parsed.translatedContent,
+      frontmatter: parsed.translatedFrontmatter || {}
+    };
   } catch (error) {
-    console.error('Translation error:', error);
-    throw error;
+    // If JSON parsing fails, try to extract JSON from markdown code blocks
+    const jsonMatch = responseText.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[1]);
+        return {
+          content: parsed.translatedContent,
+          frontmatter: parsed.translatedFrontmatter || {}
+        };
+      } catch (e) {
+        // Fall through to error
+      }
+    }
+
+    throw new Error(`Failed to parse translation response: ${error.message}`);
   }
 }
 
 /**
- * Translate MDX content using OpenAI GPT-4 API (fallback option)
+ * Translate MDX content using OpenAI GPT-4 API with structured output
  * @param {string} content - The content to translate
+ * @param {object} frontmatter - The frontmatter object to translate
  * @param {string} apiKey - The API key for authentication
- * @returns {Promise<string>} The translated content
+ * @returns {Promise<object>} The translated content and frontmatter
  */
-async function translateWithOpenAI(content, apiKey) {
+async function translateWithOpenAI(content, frontmatter, apiKey) {
   const systemPrompt = `You are a professional technical translator specializing in software engineering content.
 Translate Korean blog posts to English while:
-1. Preserving all markdown formatting exactly (##, -, *, \`, etc.)
+1. Preserving all markdown formatting exactly (##, -, *, \`\`\`, etc.)
 2. Keeping code blocks, URLs, and image paths unchanged
 3. Using natural, professional English suitable for a tech blog
 4. Translating technical terms consistently
 5. Maintaining the original structure and formatting
 
-Return ONLY the translated content without any additional explanation.`;
+You MUST respond with a JSON object in the following format:
+{
+  "translatedContent": "...translated markdown content here...",
+  "translatedFrontmatter": {
+    "title": "...translated title...",
+    "excerpt": "...translated excerpt...",
+    ...other frontmatter fields...
+  }
+}
+
+IMPORTANT: Return ONLY valid JSON without any markdown code fences or additional explanation.`;
+
+  // Few-shot examples to guide the model
+  const fewShotExamples = [
+    {
+      role: 'user',
+      content: `Translate this Korean blog post:
+
+Frontmatter:
+${JSON.stringify({
+  title: "리액트 훅스 시작하기",
+  excerpt: "리액트 훅스의 기본 개념과 사용법을 알아봅니다.",
+  date: "2024-01-15",
+  category: "React"
+}, null, 2)}
+
+Content:
+## 소개
+
+리액트 훅스는 함수형 컴포넌트에서 상태와 라이프사이클을 사용할 수 있게 해줍니다.
+
+\`\`\`javascript
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+}
+\`\`\`
+
+## 결론
+
+훅스를 사용하면 코드가 더 간결해집니다.`
+    },
+    {
+      role: 'assistant',
+      content: JSON.stringify({
+        translatedContent: `## Introduction
+
+React Hooks enable you to use state and lifecycle in functional components.
+
+\`\`\`javascript
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+}
+\`\`\`
+
+## Conclusion
+
+Using hooks makes your code more concise.`,
+        translatedFrontmatter: {
+          title: "Getting Started with React Hooks",
+          excerpt: "Learn the basic concepts and usage of React Hooks.",
+          date: "2024-01-15",
+          category: "React"
+        }
+      }, null, 2)
+    },
+    {
+      role: 'user',
+      content: `Translate this Korean blog post:
+
+Frontmatter:
+${JSON.stringify({
+  title: "타입스크립트 제네릭",
+  excerpt: "제네릭을 사용한 타입 안전성 향상",
+  date: "2024-02-20",
+  tags: ["typescript", "generics"]
+}, null, 2)}
+
+Content:
+## 제네릭이란?
+
+제네릭은 재사용 가능한 컴포넌트를 만들 때 사용됩니다.
+
+\`\`\`typescript
+function identity<T>(arg: T): T {
+  return arg;
+}
+\`\`\`
+
+이렇게 사용하면 타입 안전성을 유지할 수 있습니다.`
+    },
+    {
+      role: 'assistant',
+      content: JSON.stringify({
+        translatedContent: `## What are Generics?
+
+Generics are used when creating reusable components.
+
+\`\`\`typescript
+function identity<T>(arg: T): T {
+  return arg;
+}
+\`\`\`
+
+Using this approach maintains type safety.`,
+        translatedFrontmatter: {
+          title: "TypeScript Generics",
+          excerpt: "Improving type safety with generics",
+          date: "2024-02-20",
+          tags: ["typescript", "generics"]
+        }
+      }, null, 2)
+    }
+  ];
+
+  const userPrompt = `Translate this Korean blog post:
+
+Frontmatter:
+${JSON.stringify(frontmatter, null, 2)}
+
+Content:
+${content}`;
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -88,13 +196,15 @@ Return ONLY the translated content without any additional explanation.`;
             role: 'system',
             content: systemPrompt
           },
+          ...fewShotExamples,
           {
             role: 'user',
-            content: `Translate this Korean text to English:\n\n${content}`
+            content: userPrompt
           }
         ],
         temperature: 0.3,
-        max_tokens: 4000
+        max_tokens: 4000,
+        response_format: { type: 'json_object' }
       })
     });
 
@@ -104,28 +214,16 @@ Return ONLY the translated content without any additional explanation.`;
     }
 
     const data = await response.json();
-    return data.choices[0].message.content.trim();
+    const responseText = data.choices[0].message.content.trim();
+
+    // Parse the structured response
+    return parseTranslationResponse(responseText);
   } catch (error) {
     console.error('Translation error:', error);
     throw error;
   }
 }
 
-/**
- * Translate frontmatter fields that should be translated
- * @param {object} frontmatter - The frontmatter object
- * @param {string} translatedContent - The translated content (used for context)
- * @returns {object} The frontmatter with translated fields
- */
-function translateFrontmatter(frontmatter, translatedContent) {
-  const translated = { ...frontmatter };
-
-  // Fields that should be translated - we'll extract from translated content
-  // For now, we'll keep frontmatter as-is to avoid additional API calls
-  // In production, you might want to translate title and excerpt separately
-
-  return translated;
-}
 
 /**
  * Main translation function
@@ -169,28 +267,27 @@ async function translateMDXFile(filePath) {
   console.log('Frontmatter:', JSON.stringify(frontmatter, null, 2));
   console.log(`Content length: ${content.length} characters`);
 
-  // Determine which API to use
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  // Get OpenAI API key
   const openaiKey = process.env.OPENAI_API_KEY;
 
-  let translatedContent;
+  if (!openaiKey) {
+    throw new Error('OPENAI_API_KEY environment variable is not set');
+  }
 
   try {
-    if (anthropicKey) {
-      console.log('Using Anthropic Claude API for translation...');
-      translatedContent = await translateWithClaude(content, anthropicKey);
-    } else if (openaiKey) {
-      console.log('Using OpenAI GPT-4 API for translation...');
-      translatedContent = await translateWithOpenAI(content, openaiKey);
-    } else {
-      throw new Error('No API key found. Please set ANTHROPIC_API_KEY or OPENAI_API_KEY environment variable.');
-    }
+    console.log('Using OpenAI GPT-4 API for translation...');
 
-    // Translate frontmatter fields
-    const translatedFrontmatter = translateFrontmatter(frontmatter, translatedContent);
+    // Translate both content and frontmatter
+    const translation = await translateWithOpenAI(content, frontmatter, openaiKey);
+
+    // Merge translated frontmatter with original (keeping fields that shouldn't be translated)
+    const finalFrontmatter = {
+      ...frontmatter,
+      ...translation.frontmatter
+    };
 
     // Reconstruct the MDX file
-    const outputContent = matter.stringify(translatedContent, translatedFrontmatter);
+    const outputContent = matter.stringify(translation.content, finalFrontmatter);
 
     // Write the translated file
     fs.writeFileSync(outputPath, outputContent, 'utf8');
@@ -288,4 +385,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { translateMDXFile, translateWithClaude, translateWithOpenAI };
+module.exports = { translateMDXFile, translateWithOpenAI, parseTranslationResponse };
