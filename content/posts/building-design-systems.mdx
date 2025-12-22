@@ -1,525 +1,106 @@
 ---
-title: "Building Scalable Design Systems with StyleX"
-slug: "building-design-systems"
-publishedDate: "2024-11-22"
-excerpt: "Learn how to create maintainable design systems using StyleX, Meta's atomic CSS-in-JS solution for modern web applications."
+title: "생각 안하고 코드 읽기"
+slug: "no-thinking-code"
+publishedDate: "2025-12-22"
+excerpt: ""
 featuredImage: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1200&h=630&fit=crop"
-categories: ["Design", "Development"]
-tags: ["stylex", "design-systems", "css", "atomic-css"]
-readTime: 9
-author:
-  name: "Jordan Rivera"
-  avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop"
-  bio: "Design systems architect and frontend developer with a passion for creating beautiful, scalable interfaces"
+categories: ["Development"]
+tags: ["typescript", "code", "readability"]
+readTime: 3
 ---
 
-Design systems are the backbone of consistent, scalable user interfaces. StyleX, Meta's atomic CSS-in-JS solution, offers a powerful approach to building design systems that are both performant and maintainable. Let's explore how to leverage StyleX for your next project.
+생각 안하고 코드를 읽기 위해서는 코드가 읽기 좋아야 한다.  
 
-## What is StyleX?
+그럼 자연스레 "가독성 좋은 코드는 무엇인가?" 로 이어진다.  
+나는 이게 UX와 유사하다고 본다.  
 
-StyleX is an atomic CSS-in-JS library developed by Meta (Facebook) for their own applications. It compiles styles to atomic CSS classes at build time, resulting in:
+시대에 따라서, 상황에 따라서 유동적으로 변하기 때문이다.  
 
-- **Zero runtime overhead** - Styles are compiled away
-- **Optimal bundle size** - Shared atomic classes across components
-- **Type safety** - Full TypeScript support
-- **Deterministic styling** - Predictable style resolution
-- **Framework agnostic** - Works with React, Vue, or vanilla JS
+책을 공동집필 할 때를 떠올려보자  
+문장과 문단을 다듬어 하나로 매끄럽게 이어지도록 한다.  
+즉, 글의 문체가 같도록 적어도 비슷하게 한다는 이야기다.  
 
-## Why StyleX for Design Systems?
+코드도 마찬가지다.  
+하나의 거대한 책을 공동 집필 하는 것이다.  
+외부 라이브러리를 사용할 때에는 인용하는 것 처럼 외부 코드 스타일이 들어오지만  
+결코 섞이지 않는다. 명백히 다른 스타일을 유지한다.  
 
-Traditional CSS-in-JS solutions have runtime costs. StyleX eliminates these by generating atomic CSS at build time:
+원점으로 돌아와서 그러면 읽기 힘든 책은 뭘까?  
+나는 사족이 많은 책이라 생각한다.  
+사족은 집중력을 깨트리고 독자로 하여금 사족의 의도에 대해서 생각하게 만든다.  
+그리고 사족임을 깨닫는다.  
+이는 읽는 당시에는 사족임을 모르기에 읽어봐야만 판단할 수 있기 때문이다.  
 
-```javascript
-// Input
-const styles = stylex.create({
-  button: {
-    backgroundColor: '#6B3E2E',
-    padding: '12px 24px',
-    borderRadius: '8px',
+### 사족
+
+코드로 한번 봐보자  
+
+```js
+if(!hasNext()) {
+  console.log("has not next!");
+}
+```
+
+이 코드를 읽기 위해서는 `!` 연산자의 작용을 생각해야한다.
+그러고 나서야 `hasNext`의 반환값이 `false`일 때 라는 조건을 깨닫게 된다.  
+
+이를 서순대로 코드를 적으면 아래와 같다.
+
+```js
+if(hasNext() === false) {
+  console.log("has not next!");
+}
+```
+
+코드가 더욱 더 명시적으로 된 것을 볼 수 있다.
+
+해당 구문만 이야기하고자 하는 것은 아니다.
+내가 이야기하고싶은건 생각을 하게 만드는 코드는 최대한 지양하자는 의미다.
+
+다음의 코드를 봐보자
+
+```ts
+function fn1(targetBoolean: boolean): boolean | null {
+  const a: boolean = getCondition();
+
+  if(a === true && targetBoolean === false) {
+    return true;
   }
-});
 
-// Output (build time)
-// Generates atomic classes: .bg-xyz, .p-abc, .br-def
-```
-
-This approach gives you the developer experience of CSS-in-JS with the performance of hand-crafted CSS.
-
-## Design Token Architecture
-
-The foundation of any design system is its tokens. With StyleX, define tokens using the `defineVars` API:
-
-```typescript
-import * as stylex from '@stylexjs/stylex';
-
-export const colors = stylex.defineVars({
-  // Primary colors - warm brown palette
-  primaryBrown: '#6B3E2E',
-  primaryBrownHover: '#5A3426',
-  primaryBrownActive: '#4A2B1F',
-
-  // Secondary colors
-  secondaryTan: '#D2B48C',
-  accentOrange: '#E67E22',
-
-  // Neutral colors
-  neutralWhite: '#FFFFFF',
-  neutralGray100: '#F5F5F5',
-  neutralGray200: '#E5E5E5',
-  neutralGray300: '#D4D4D4',
-  neutralGray800: '#404040',
-  neutralBlack: '#171717',
-
-  // Semantic colors
-  successGreen: '#22C55E',
-  errorRed: '#EF4444',
-  warningYellow: '#F59E0B',
-  infoBlue: '#3B82F6',
-});
-
-export const spacing = stylex.defineVars({
-  xs: '4px',
-  sm: '8px',
-  md: '16px',
-  lg: '24px',
-  xl: '32px',
-  xxl: '48px',
-});
-
-export const typography = stylex.defineVars({
-  fontFamilyHeading: 'Georgia, serif',
-  fontFamilyBody: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-
-  fontSizeXs: '12px',
-  fontSizeSm: '14px',
-  fontSizeBase: '16px',
-  fontSizeLg: '18px',
-  fontSizeXl: '24px',
-  fontSize2xl: '32px',
-  fontSize3xl: '48px',
-
-  fontWeightNormal: '400',
-  fontWeightMedium: '500',
-  fontWeightSemibold: '600',
-  fontWeightBold: '700',
-
-  lineHeightTight: '1.25',
-  lineHeightNormal: '1.5',
-  lineHeightRelaxed: '1.75',
-});
-
-export const borderRadius = stylex.defineVars({
-  none: '0',
-  sm: '4px',
-  md: '8px',
-  lg: '12px',
-  xl: '16px',
-  full: '9999px',
-});
-```
-
-## Component Styling Patterns
-
-With tokens defined, create reusable component styles:
-
-```typescript
-import * as stylex from '@stylexjs/stylex';
-import { colors, spacing, typography, borderRadius } from './tokens.stylex';
-
-const buttonStyles = stylex.create({
-  base: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: typography.fontFamilyBody,
-    fontSize: typography.fontSizeBase,
-    fontWeight: typography.fontWeightMedium,
-    lineHeight: typography.lineHeightNormal,
-    borderRadius: borderRadius.md,
-    border: 'none',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease-in-out',
-    textDecoration: 'none',
-  },
-
-  primary: {
-    backgroundColor: colors.primaryBrown,
-    color: colors.neutralWhite,
-    ':hover': {
-      backgroundColor: colors.primaryBrownHover,
-    },
-    ':active': {
-      backgroundColor: colors.primaryBrownActive,
-    },
-  },
-
-  secondary: {
-    backgroundColor: colors.secondaryTan,
-    color: colors.primaryBrown,
-    ':hover': {
-      backgroundColor: {
-        default: colors.secondaryTan,
-        ':hover': colors.neutralGray200,
-      },
-    },
-  },
-
-  small: {
-    padding: `${spacing.sm} ${spacing.md}`,
-    fontSize: typography.fontSizeSm,
-  },
-
-  medium: {
-    padding: `${spacing.md} ${spacing.lg}`,
-    fontSize: typography.fontSizeBase,
-  },
-
-  large: {
-    padding: `${spacing.lg} ${spacing.xl}`,
-    fontSize: typography.fontSizeLg,
-  },
-});
-
-// Usage in component
-export function Button({ variant = 'primary', size = 'medium', children }) {
-  return (
-    <button {...stylex.props(
-      buttonStyles.base,
-      buttonStyles[variant],
-      buttonStyles[size]
-    )}>
-      {children}
-    </button>
-  );
-}
-```
-
-## Theme Support
-
-StyleX makes theming straightforward with variable overrides:
-
-```typescript
-// themes.stylex.ts
-import * as stylex from '@stylexjs/stylex';
-import { colors } from './tokens.stylex';
-
-export const lightTheme = stylex.createTheme(colors, {
-  primaryBrown: '#6B3E2E',
-  neutralWhite: '#FFFFFF',
-  neutralBlack: '#171717',
-  // ... other light theme values
-});
-
-export const darkTheme = stylex.createTheme(colors, {
-  primaryBrown: '#D2B48C',
-  neutralWhite: '#171717',
-  neutralBlack: '#FFFFFF',
-  // ... other dark theme values
-});
-
-// Apply theme
-<div {...stylex.props(darkTheme)}>
-  <Button>Dark mode button</Button>
-</div>
-```
-
-## Layout Primitives
-
-Build reusable layout components:
-
-```typescript
-const layoutStyles = stylex.create({
-  stack: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  inline: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-
-  center: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  spaceBetween: {
-    justifyContent: 'space-between',
-  },
-
-  wrap: {
-    flexWrap: 'wrap',
-  },
-});
-
-// Composable layout components
-export function Stack({ spacing, center, children }) {
-  return (
-    <div {...stylex.props(
-      layoutStyles.stack,
-      center && layoutStyles.center,
-      { gap: spacing }
-    )}>
-      {children}
-    </div>
-  );
-}
-```
-
-## Responsive Design
-
-StyleX supports responsive styles through media queries:
-
-```typescript
-const responsiveStyles = stylex.create({
-  container: {
-    padding: spacing.md,
-    '@media (min-width: 768px)': {
-      padding: spacing.lg,
-    },
-    '@media (min-width: 1024px)': {
-      padding: spacing.xl,
-    },
-  },
-
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: spacing.md,
-    '@media (min-width: 640px)': {
-      gridTemplateColumns: 'repeat(2, 1fr)',
-    },
-    '@media (min-width: 1024px)': {
-      gridTemplateColumns: 'repeat(3, 1fr)',
-    },
-  },
-});
-```
-
-## Component Composition
-
-StyleX excels at component composition:
-
-```typescript
-const cardStyles = stylex.create({
-  card: {
-    backgroundColor: colors.neutralWhite,
-    borderRadius: borderRadius.lg,
-    padding: spacing.lg,
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-  },
-
-  hoverable: {
-    transition: 'transform 0.2s, box-shadow 0.2s',
-    ':hover': {
-      transform: 'translateY(-2px)',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    },
-  },
-
-  clickable: {
-    cursor: 'pointer',
-  },
-});
-
-export function Card({ hoverable, clickable, children, style }) {
-  return (
-    <div {...stylex.props(
-      cardStyles.card,
-      hoverable && cardStyles.hoverable,
-      clickable && cardStyles.clickable,
-      style // User overrides
-    )}>
-      {children}
-    </div>
-  );
-}
-```
-
-## Best Practices
-
-### 1. Token-First Approach
-
-Always use tokens instead of hardcoded values:
-
-```typescript
-// Bad
-const styles = stylex.create({
-  button: {
-    backgroundColor: '#6B3E2E',
-    padding: '16px',
+  if(a === false && targetBoolean === true {
+    return false;
   }
-});
 
-// Good
-const styles = stylex.create({
-  button: {
-    backgroundColor: colors.primaryBrown,
-    padding: spacing.md,
+  return null;
+}
+```
+
+간략화하여 그나마 읽을만 하겠지만, 이 또한 생각을 많이하게 만드는 코드다.  
+인자값인 `targetBoolean`과 `getCondition()`으로 얻은 `a`를 신경써서 읽어야 한다.  
+인자값으로 추가 변수들이 들어와서 `getCondition()`으로 들어온다면 추적하기가 더 힘들 것이다.  
+
+이를 아래와 같이 변경할 수 있다.
+
+```ts
+function fn1(targetBoolean: boolean): boolean | null {
+  const a: boolean = getCondition();
+
+  if(a === targetBoolean) {
+    return null;
   }
-});
-```
 
-### 2. Semantic Naming
-
-Use semantic names that describe purpose, not appearance:
-
-```typescript
-// Bad
-export const colors = stylex.defineVars({
-  brown: '#6B3E2E',
-  tan: '#D2B48C',
-});
-
-// Good
-export const colors = stylex.defineVars({
-  primary: '#6B3E2E',
-  secondary: '#D2B48C',
-  textPrimary: '#171717',
-  backgroundPrimary: '#FFFFFF',
-});
-```
-
-### 3. Composition Over Duplication
-
-Create composable style objects:
-
-```typescript
-const baseButton = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  // ... shared styles
-};
-
-const buttonStyles = stylex.create({
-  primary: {
-    ...baseButton,
-    backgroundColor: colors.primary,
-  },
-  secondary: {
-    ...baseButton,
-    backgroundColor: colors.secondary,
-  },
-});
-```
-
-### 4. Performance Optimization
-
-StyleX automatically deduplicates styles, but you can help:
-
-```typescript
-// Create styles once, reuse everywhere
-const commonStyles = stylex.create({
-  flexCenter: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
-// Use in multiple components
-function Component1() {
-  return <div {...stylex.props(commonStyles.flexCenter)} />;
+  if(a) {
+    return true;    
+  }
+  
+  return false;
 }
 ```
 
-## Documentation and Tooling
+`return a;`를 하지 않은 이유는 실제로는 로직이 들어가기 때문이다.  
+이렇게 된다면 분기처리 횟수는 같지만 그럼에도 각 분기문에 조건이 줄어들었기 때문에 읽기가 더욱 더 좋아졌다.  
+이를 혹자는 카디널리티의 감소라고 표현하기도 하며 복잡도 감소라고 부르기도 한다.
 
-Good design systems need documentation:
-
-1. **Storybook Integration** - Document components with stories
-2. **Token Documentation** - Generate token reference automatically
-3. **Usage Examples** - Show real-world implementations
-4. **Accessibility Guidelines** - Document ARIA patterns
-5. **Migration Guides** - Help teams adopt the system
-
-## Real-World Example: Card Component
-
-Here's a complete example bringing it all together:
-
-```typescript
-import * as stylex from '@stylexjs/stylex';
-import { colors, spacing, typography, borderRadius } from './tokens.stylex';
-
-const cardStyles = stylex.create({
-  card: {
-    backgroundColor: colors.neutralWhite,
-    borderRadius: borderRadius.lg,
-    overflow: 'hidden',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    transition: 'all 0.2s ease-in-out',
-  },
-
-  interactive: {
-    cursor: 'pointer',
-    ':hover': {
-      transform: 'translateY(-2px)',
-      boxShadow: '0 10px 15px rgba(0, 0, 0, 0.1)',
-    },
-  },
-
-  header: {
-    padding: spacing.lg,
-    borderBottom: `1px solid ${colors.neutralGray200}`,
-  },
-
-  title: {
-    fontFamily: typography.fontFamilyHeading,
-    fontSize: typography.fontSizeXl,
-    fontWeight: typography.fontWeightBold,
-    color: colors.primaryBrown,
-    margin: 0,
-  },
-
-  body: {
-    padding: spacing.lg,
-  },
-
-  footer: {
-    padding: spacing.lg,
-    borderTop: `1px solid ${colors.neutralGray200}`,
-    backgroundColor: colors.neutralGray100,
-  },
-});
-
-export function Card({ title, children, footer, interactive, onClick }) {
-  return (
-    <div
-      {...stylex.props(
-        cardStyles.card,
-        interactive && cardStyles.interactive
-      )}
-      onClick={onClick}
-    >
-      {title && (
-        <div {...stylex.props(cardStyles.header)}>
-          <h3 {...stylex.props(cardStyles.title)}>{title}</h3>
-        </div>
-      )}
-      <div {...stylex.props(cardStyles.body)}>
-        {children}
-      </div>
-      {footer && (
-        <div {...stylex.props(cardStyles.footer)}>
-          {footer}
-        </div>
-      )}
-    </div>
-  );
-}
-```
-
-## Conclusion
-
-StyleX provides a solid foundation for building scalable design systems. Its atomic CSS approach delivers excellent performance while maintaining a great developer experience. The warm brown color scheme we've used throughout this article demonstrates how tokens create a cohesive visual language.
-
-Key takeaways:
-
-- Start with a comprehensive token system
-- Build composable, reusable components
-- Leverage TypeScript for type safety
-- Document everything
-- Test thoroughly across different scenarios
-
-By following these patterns, you'll create a design system that scales with your application while remaining maintainable and performant.
+---
+draft
+---
