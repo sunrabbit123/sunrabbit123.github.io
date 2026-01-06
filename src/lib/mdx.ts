@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { BlogPost, Author } from '@/types/blog';
+import { BlogPost } from '@/types/blog';
 
 const POSTS_DIRECTORY = path.join(process.cwd(), 'content', 'posts');
 
@@ -17,11 +17,6 @@ export interface MDXFrontmatter {
   categories: string[];
   tags: string[];
   readTime: number;
-  author: {
-    name: string;
-    avatar: string;
-    bio: string;
-  };
 }
 
 /**
@@ -121,20 +116,11 @@ export function convertFrontmatterToBlogPost(
   // Parse the date string to Date object
   const publishedDate = new Date(frontmatter.publishedDate);
 
-  // Create Author object
-  const author: Author = {
-    id: frontmatter.author.name.toLowerCase().replace(/\s+/g, '-'),
-    name: frontmatter.author.name,
-    avatar: frontmatter.author.avatar,
-    bio: frontmatter.author.bio,
-  };
-
   // Create BlogPost object
   const blogPost: BlogPost = {
     id: frontmatter.slug,
     title: frontmatter.title,
     slug: frontmatter.slug,
-    author,
     publishedDate,
     excerpt: frontmatter.excerpt,
     content,

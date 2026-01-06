@@ -4,18 +4,10 @@
 
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 
-export interface Author {
-  id: string;
-  name: string;
-  avatar: string;
-  bio: string;
-}
-
 export interface BlogPost {
   id: string;
   title: string;
   slug: string;
-  author: Author;
   publishedDate: Date;
   excerpt: string;
   content: string;

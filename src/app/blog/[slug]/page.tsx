@@ -85,27 +85,6 @@ const styles = stylex.create({
     borderBottomStyle: 'solid',
     borderBottomColor: colors.borderLight,
   },
-  authorInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  avatar: {
-    width: '48px',
-    height: '48px',
-    borderRadius: borderRadius.full,
-    objectFit: 'cover',
-  },
-  authorDetails: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: spacing.xs,
-  },
-  authorName: {
-    fontSize: fontSizes.base,
-    fontWeight: fontWeights.semibold,
-    color: colors.textPrimary,
-  },
   date: {
     fontSize: fontSizes.sm,
     color: colors.textTertiary,
@@ -172,7 +151,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: post.excerpt,
       type: 'article',
       publishedTime: post.publishedDate.toISOString(),
-      authors: [post.author.name],
       tags: post.tags,
       images: [
         {
@@ -230,17 +208,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           <h1 {...stylex.props(styles.title)}>{post.title}</h1>
 
           <div {...stylex.props(styles.meta)}>
-            <div {...stylex.props(styles.authorInfo)}>
-              <img
-                src={post.author.avatar}
-                alt={post.author.name}
-                {...stylex.props(styles.avatar)}
-              />
-              <div {...stylex.props(styles.authorDetails)}>
-                <span {...stylex.props(styles.authorName)}>{post.author.name}</span>
-                <span {...stylex.props(styles.date)}>{formattedDate}</span>
-              </div>
-            </div>
+            <span {...stylex.props(styles.date)}>{formattedDate}</span>
             <span {...stylex.props(styles.readTime)}>{post.readTime} min read</span>
           </div>
         </div>
